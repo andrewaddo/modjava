@@ -5,6 +5,7 @@ import com.shashi.dataaccess.entity.OrderId;
 import com.shashi.dataaccess.entity.Product;
 import com.shashi.dataaccess.entity.Transactions;
 import com.shashi.dataaccess.entity.Usercart;
+import com.shashi.dataaccess.entity.User;
 import com.shashi.dataaccess.repository.OrdersRepository;
 import com.shashi.dataaccess.repository.ProductRepository;
 import com.shashi.dataaccess.repository.TransactionsRepository;
@@ -34,6 +35,37 @@ public class OrderService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UserService userService;
+
+    // Setters for testing purposes
+    public void setOrdersRepository(OrdersRepository ordersRepository) {
+        this.ordersRepository = ordersRepository;
+    }
+
+    public void setTransactionsRepository(TransactionsRepository transactionsRepository) {
+        this.transactionsRepository = transactionsRepository;
+    }
+
+    public void setUsercartRepository(UsercartRepository usercartRepository) {
+        this.usercartRepository = usercartRepository;
+    }
+
+    public void setProductRepository(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Transactional
     public String placeOrder(String username, BigDecimal totalAmount) {
@@ -75,6 +107,12 @@ public class OrderService {
         // Clear the user's cart
         usercartRepository.deleteAll(cartItems);
 
+        // Send order confirmation email
+        User user = userService.getUserByEmail(username);
+        if (user != null) {
+            emailService.sendOrderConfirmation(user.getEmail(), orderId, user.getName());
+        }
+
         return orderId;
     }
 
@@ -98,6 +136,17 @@ public class OrderService {
             Orders order = orderOptional.get();
             order.setShipped(shippedStatus);
             ordersRepository.save(order);
+
+            // Send shipping update email if status is shipped
+            if (shippedStatus == 1) {
+                // Need to get username from transaction or order
+                transactionsRepository.findById(orderId).ifPresent(transaction -> {
+                    User user = userService.getUserByEmail(transaction.getUsername());
+                    if (user != null) {
+                        emailService.sendShippingUpdate(user.getEmail(), orderId, prodid, user.getName());
+                    }
+                });
+            }
             return true;
         }
         return false;

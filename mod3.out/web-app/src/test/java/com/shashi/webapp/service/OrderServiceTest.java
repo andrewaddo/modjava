@@ -4,8 +4,6 @@ import com.shashi.dataaccess.entity.*;
 import com.shashi.dataaccess.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
@@ -20,19 +18,13 @@ import static org.mockito.Mockito.*;
 
 public class OrderServiceTest {
 
-    @Mock
-    private OrdersRepository ordersRepository;
+    private OrdersRepository ordersRepository = mock(OrdersRepository.class);
+    private TransactionsRepository transactionsRepository = mock(TransactionsRepository.class);
+    private UsercartRepository usercartRepository = mock(UsercartRepository.class);
+    private ProductRepository productRepository = mock(ProductRepository.class);
+    private EmailService emailService = mock(EmailService.class);
+    private UserService userService = mock(UserService.class);
 
-    @Mock
-    private TransactionsRepository transactionsRepository;
-
-    @Mock
-    private UsercartRepository usercartRepository;
-
-    @Mock
-    private ProductRepository productRepository;
-
-    @InjectMocks
     private OrderService orderService;
 
     private final String TEST_USERNAME = "test@example.com";
@@ -42,6 +34,13 @@ public class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        orderService = new OrderService();
+        orderService.setOrdersRepository(ordersRepository);
+        orderService.setTransactionsRepository(transactionsRepository);
+        orderService.setUsercartRepository(usercartRepository);
+        orderService.setProductRepository(productRepository);
+        orderService.setEmailService(emailService);
+        orderService.setUserService(userService);
     }
 
     @Test
@@ -58,6 +57,7 @@ public class OrderServiceTest {
         when(productRepository.findById(TEST_PRODID_2)).thenReturn(Optional.of(product2));
         when(ordersRepository.save(any(Orders.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(transactionsRepository.save(any(Transactions.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userService.getUserByEmail(TEST_USERNAME)).thenReturn(new User(TEST_USERNAME, "Test User", null, null, null, null));
 
         String orderId = orderService.placeOrder(TEST_USERNAME, BigDecimal.valueOf(250.00));
 
@@ -123,8 +123,14 @@ public class OrderServiceTest {
     void testUpdateOrderStatus_Success() {
         OrderId id = new OrderId("ORDER1", TEST_PRODID);
         Orders order = new Orders(id, 1, BigDecimal.valueOf(100.00), 0);
+        User user = new User(TEST_USERNAME, "Test User", null, null, null, null);
+        Transactions transaction = new Transactions("ORDER1", TEST_USERNAME, LocalDateTime.now(), BigDecimal.valueOf(100.00));
+
         when(ordersRepository.findById(id)).thenReturn(Optional.of(order));
         when(ordersRepository.save(any(Orders.class))).thenReturn(order);
+        when(transactionsRepository.findById("ORDER1")).thenReturn(Optional.of(transaction));
+        when(userService.getUserByEmail(TEST_USERNAME)).thenReturn(user);
+        doNothing().when(emailService).sendShippingUpdate(anyString(), anyString(), anyString(), anyString());
 
         boolean result = orderService.updateOrderStatus("ORDER1", TEST_PRODID, 1);
 
@@ -132,6 +138,9 @@ public class OrderServiceTest {
         assertEquals(1, order.getShipped());
         verify(ordersRepository, times(1)).findById(id);
         verify(ordersRepository, times(1)).save(order);
+        verify(transactionsRepository, times(1)).findById("ORDER1");
+        verify(userService, times(1)).getUserByEmail(TEST_USERNAME);
+        verify(emailService, times(1)).sendShippingUpdate(user.getEmail(), "ORDER1", TEST_PRODID, user.getName());
     }
 
     @Test

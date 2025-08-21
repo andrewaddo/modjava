@@ -13,6 +13,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    // Setters for testing purposes
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     public boolean registerUser(User user) {
         // Check if user with given email already exists
         if (userRepository.existsById(user.getEmail())) {
@@ -20,6 +32,7 @@ public class UserService {
         }
         // In a real application, password should be encoded before saving
         userRepository.save(user);
+        emailService.sendRegistrationConfirmation(user.getEmail(), user.getName());
         return true;
     }
 

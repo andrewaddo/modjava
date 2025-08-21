@@ -4,8 +4,6 @@ import com.shashi.dataaccess.entity.User;
 import com.shashi.dataaccess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
@@ -15,15 +13,17 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    private UserRepository userRepository = mock(UserRepository.class);
+    private EmailService emailService = mock(EmailService.class);
 
-    @InjectMocks
     private UserService userService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        userService = new UserService();
+        userService.setUserRepository(userRepository);
+        userService.setEmailService(emailService);
     }
 
     @Test
@@ -31,12 +31,14 @@ public class UserServiceTest {
         User newUser = new User("test@example.com", "Test User", 1234567890L, "123 Test St", 12345, "password");
         when(userRepository.existsById(newUser.getEmail())).thenReturn(false);
         when(userRepository.save(newUser)).thenReturn(newUser);
+        doNothing().when(emailService).sendRegistrationConfirmation(anyString(), anyString());
 
         boolean result = userService.registerUser(newUser);
 
         assertTrue(result);
         verify(userRepository, times(1)).existsById(newUser.getEmail());
         verify(userRepository, times(1)).save(newUser);
+        verify(emailService, times(1)).sendRegistrationConfirmation(newUser.getEmail(), newUser.getName());
     }
 
     @Test
@@ -49,6 +51,7 @@ public class UserServiceTest {
         assertFalse(result);
         verify(userRepository, times(1)).existsById(existingUser.getEmail());
         verify(userRepository, never()).save(any(User.class));
+        verify(emailService, never()).sendRegistrationConfirmation(anyString(), anyString());
     }
 
     @Test
