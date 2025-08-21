@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Available Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Available Products</h2>
+    <a href="/cartDetails" class="btn btn-info mb-3">View Cart</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Info</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.pname}"></td>
+            <td th:text="${product.ptype}"></td>
+            <td th:text="${product.pinfo}"></td>
+            <td th:text="${product.pprice}"></td>
+            <td th:text="${product.pquantity}"></td>
+            <td>
+                <img th:if="${product.image != null}" th:src="@{'/admin/products/image/' + product.pid}" width="50" height="50"/>
+                <span th:unless="${product.image != null}">No Image</span>
+            </td>
+            <td>
+                <form th:action="@{/addToCart}" method="post">
+                    <input type="hidden" name="prodid" th:value="${product.pid}" />
+                    <input type="number" name="quantity" value="1" min="1" class="form-control form-control-sm w-50 d-inline" />
+                    <button type="submit" class="btn btn-success btn-sm ml-2">Add to Cart</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
