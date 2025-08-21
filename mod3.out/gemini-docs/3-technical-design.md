@@ -1,122 +1,93 @@
-# Technical Design for Spring Boot Migration
+# Technical Design for Spring Boot Modernization
 
-## 1. Introduction
+This document outlines the technical design for migrating the legacy J2EE `shopping-cart` application to a modern Spring Boot application. The design emphasizes a layered architecture, robust testing, and cloud-native readiness.
 
-This document outlines the technical design for migrating the legacy J2EE `shopping-cart` application to a modern Spring Boot application. The goal is to achieve full feature parity, enhance performance and security, and establish a production-grade application with a robust automated testing suite.
+## 1. Project Structure
 
-## 2. Project Structure
-
-The new Spring Boot application will adopt a multi-module Maven project structure to promote modularity, separation of concerns, and easier management of dependencies. The proposed modules are:
-
-*   **`web-app`**: This module will contain the Spring Boot application entry point, REST controllers, service layer, and Thymeleaf templates for server-side rendering. It will handle HTTP requests and responses.
-*   **`data-access`**: This module will encapsulate all data persistence logic, including JPA entities, Spring Data JPA repositories, and database migration scripts. It will interact directly with the PostgreSQL database.
-*   **`integration-tests`**: This module will house end-to-end integration tests using Selenium for UI interaction and Testcontainers for managing a real PostgreSQL database instance during testing. This module will be separate to ensure that integration tests can be run independently and do not interfere with unit tests or the main application build.
+The new application will be a multi-module Maven project, organized as follows:
 
 ```
 ./mod3.out/
 ├── pom.xml (Parent POM)
-├── web-app/
+├── web-app/ (Spring Boot application for web layer, controllers, services)
 │   ├── pom.xml
 │   └── src/
-│       ├── main/
-│       │   ├── java/com/shashi/webapp/
-│       │   │   ├── ShoppingCartApplication.java
-│       │   │   ├── controller/
-│       │   │   ├── service/
-│       │   │   └── model/ (DTOs, View Models)
-│       │   └── resources/
-│       │       ├── application.properties
-│       │       └── templates/ (Thymeleaf HTMLs)
-│       └── test/
-│           └── java/com/shashi/webapp/
-│               └── unit/ (Unit tests for controllers and services)
-├── data-access/
+│       ├── main/java/com/shashi/webapp/
+│       │   ├── controller/
+│       │   ├── service/
+│       │   └── config/ (Spring Security, WebConfig etc.)
+│       └── main/resources/
+│           ├── templates/ (Thymeleaf templates)
+│           ├── static/ (CSS, JS, images)
+│           └── application.properties
+│       └── test/java/com/shashi/webapp/
+│           ├── controller/
+│           └── service/
+├── data-access/ (Module for JPA entities and repositories)
 │   ├── pom.xml
 │   └── src/
-│       ├── main/
-│       │   ├── java/com/shashi/dataaccess/
-│       │   │   ├── entity/
-│       │   │   └── repository/
-│       │   └── resources/
-│       │       ├── application.properties
-│       │       ├── db/migration/ (Flyway/Liquibase scripts)
-│       │       └── data.sql (Initial data)
-│       └── test/
-│           └── java/com/shashi/dataaccess/
-│               └── unit/ (Unit tests for repositories)
-└── integration-tests/
-    ├── pom.xml
-    └── src/
-        └── test/
-            ├── java/com/shashi/integrationtests/
-            │   └── ShoppingCartIntegrationTest.java
-            └── resources/
-                └── application.properties
+│       ├── main/java/com/shashi/dataaccess/
+│       │   ├── entity/
+│       │   └── repository/
+│       └── test/java/com/shashi/dataaccess/
+├── integration-tests/ (Module for end-to-end and integration tests)
+│   ├── pom.xml
+│   └── src/
+│       └── test/java/com/shashi/integration/
+│           ├── config/
+│           └── tests/
+└── gemini-docs/ (Documentation generated during migration)
+    ├── 1-database-schema.md
+    ├── 2-features/
+    └── 3-technical-design.md
 ```
 
-## 3. Key Libraries and Technologies
+## 2. Key Libraries and Technologies
 
-*   **Spring Boot**: The foundation for the new application, providing auto-configuration and a powerful ecosystem.
-*   **Spring Web**: For building RESTful APIs and handling web requests (Controllers).
-*   **Spring Data JPA**: For simplified data access and persistence using Java Persistence API (JPA) with Hibernate as the default implementation.
-*   **Thymeleaf**: A modern server-side template engine for rendering HTML views, replacing JSP.
-*   **Spring Security**: For robust authentication and authorization, replacing custom J2EE security mechanisms.
-*   **PostgreSQL**: The target relational database, replacing MySQL. This will require a schema migration.
-*   **JUnit 5**: The testing framework for writing unit tests.
+*   **Spring Boot**: Core framework for building standalone, production-grade Spring applications.
+*   **Spring Web (Spring MVC)**: For building RESTful APIs and handling web requests. Will be used for controllers.
+*   **Spring Data JPA**: For simplified data access layer using Java Persistence API (JPA) and Hibernate as the ORM.
+*   **Thymeleaf**: Server-side template engine for rendering dynamic HTML content. Chosen for its natural templating and strong Spring integration.
+*   **Spring Security**: For robust authentication and authorization mechanisms.
+*   **JUnit 5**: Primary testing framework for unit tests.
 *   **Mockito**: For mocking dependencies in unit tests.
-*   **Testcontainers**: For providing lightweight, disposable instances of databases (PostgreSQL) and web browsers (Selenium) for integration tests.
-*   **Selenium**: For automating browser interactions in end-to-end integration tests.
-*   **Maven**: The build automation tool.
-*   **Flyway/Liquibase (TBD)**: For managing database schema migrations. (Decision to be made during implementation, but Flyway is generally preferred for its simplicity).
+*   **Testcontainers**: For providing lightweight, disposable instances of databases (PostgreSQL) and other services for integration tests.
+*   **Selenium**: For automating browser interactions in end-to-end UI tests.
+*   **PostgreSQL**: The target relational database for the modernized application.
+*   **Maven**: Build automation tool.
 
-## 4. Architectural Patterns
+## 3. Architectural Patterns
 
 The application will follow a layered architecture:
 
-*   **Controller Layer**: Handles incoming HTTP requests, delegates to the service layer, and returns appropriate HTTP responses. Will use Spring MVC annotations (`@RestController`, `@Controller`).
-*   **Service Layer**: Contains the core business logic. Services will orchestrate operations, interact with repositories, and apply business rules. Annotated with `@Service`.
-*   **Repository Layer**: Provides an abstraction over the data persistence mechanism. Uses Spring Data JPA interfaces (`JpaRepository`) for CRUD operations and custom queries. Annotated with `@Repository`.
-*   **Entity Layer**: Plain Old Java Objects (POJOs) representing the database tables, annotated with JPA (`@Entity`, `@Table`, `@Id`, `@Column`).
-*   **DTOs/View Models**: Data Transfer Objects or View Models will be used to transfer data between layers, especially between controllers and services, and for presenting data to the UI, ensuring separation of concerns and preventing direct exposure of entities.
+*   **Presentation Layer (Controllers)**: Handles incoming HTTP requests, delegates business logic to services, and prepares responses (either JSON for APIs or rendered HTML via Thymeleaf).
+*   **Service Layer (Services)**: Contains the core business logic. Services orchestrate operations, interact with the data access layer, and apply business rules. They are typically annotated with `@Service`.
+*   **Data Access Layer (Repositories)**: Provides an abstraction over the persistence mechanism. Spring Data JPA repositories will handle CRUD operations and custom queries. Entities will represent the database tables.
 
-## 5. Database Migration Strategy
+## 4. Database Migration Strategy
 
-The existing MySQL database will be migrated to PostgreSQL. The migration will involve:
+The existing MySQL database will be migrated to PostgreSQL. The strategy involves:
 
-1.  **Schema Conversion**: Converting MySQL-specific data types and syntax to PostgreSQL equivalents. This will be primarily handled by defining JPA entities and allowing Hibernate to generate the schema, or by writing explicit Flyway/Liquibase migration scripts.
-2.  **Data Migration**: Transferring existing data from the MySQL database to the new PostgreSQL database. For the initial prototype, this might involve simple `INSERT` statements derived from the existing `mysql_query.sql` or manual data entry. For a production migration, a dedicated data migration tool or script would be used.
-3.  **Connection Configuration**: Updating `application.properties` in the `data-access` module to connect to the PostgreSQL database.
+1.  **Schema Conversion**: Manually converting the MySQL schema (from `mysql_query.sql`) to PostgreSQL-compatible DDL. This includes adjusting data types, auto-increment syntax, and foreign key constraints if necessary.
+2.  **Data Migration**: For initial data, `INSERT` statements from `mysql_query.sql` will be adapted for PostgreSQL. For production data, a one-time migration script or tool will be used.
+3.  **JPA Entity Mapping**: Creating JPA entities in the `data-access` module that accurately map to the new PostgreSQL table structure.
+4.  **Flyway/Liquibase (Future Consideration)**: For managing database schema evolution in a production environment, a tool like Flyway or Liquibase will be integrated in a later phase to handle version-controlled migrations.
 
-## 6. Security Considerations
+## 5. Testing Strategy
 
-Spring Security will be integrated to handle authentication and authorization. Key aspects include:
+A comprehensive testing strategy will be employed:
 
-*   **User Authentication**: Implementing user login and registration with secure password hashing (e.g., BCrypt).
-*   **Authorization**: Defining roles (e.g., `USER`, `ADMIN`) and securing endpoints based on these roles.
-*   **Session Management**: Spring Security will manage user sessions.
-*   **CSRF Protection**: Built-in CSRF protection will be enabled.
-*   **Input Validation**: All user inputs will be validated to prevent common vulnerabilities like SQL injection and XSS.
+*   **Unit Tests**: Written using JUnit 5 and Mockito for the service and controller layers, ensuring individual components function correctly in isolation. These tests will reside in the `web-app` and `data-access` modules.
+*   **Integration Tests**: Written using JUnit 5, Testcontainers (for a real PostgreSQL instance), and Selenium (for UI interaction). These tests will cover end-to-end user journeys and interactions between different layers of the application. These tests will reside in the `integration-tests` module.
 
-## 7. Testing Strategy
+## 6. Cloud Run Deployment Considerations
 
-A multi-layered testing strategy will be employed:
+The application will be designed with Cloud Run in mind:
 
-*   **Unit Tests**: Written using JUnit 5 and Mockito for isolated testing of individual components (services, controllers, repositories). These tests will run fast and provide immediate feedback.
-*   **Integration Tests**: Located in the `integration-tests` module, these will verify the interaction between different layers and external systems (database, browser). Testcontainers will be used to spin up real PostgreSQL instances for database interaction and Selenium for simulating user interactions in a browser.
-*   **Test Data**: Test-specific data will be managed to ensure repeatable and reliable test execution.
+*   **Statelessness**: Services will be designed to be stateless to allow for easy scaling and load balancing.
+*   **Containerization**: A `Dockerfile` will be created for the `web-app` module to package the application into a Docker image.
+*   **Configuration**: Externalized configuration using Spring Boot's `application.properties` (or `application.yml`) and environment variables for sensitive information.
+*   **Logging**: Standardized logging to `stdout`/`stderr` for easy integration with Cloud Run's logging mechanisms.
+*   **Health Checks**: Spring Boot Actuator will be used to expose health endpoints for Cloud Run's readiness and liveness probes.
 
-## 8. Deployment Strategy (Cloud Run)
-
-The application will be designed for deployment on Google Cloud Run. This involves:
-
-*   **Containerization**: Packaging the Spring Boot application as a Docker image.
-*   **Stateless Design**: Ensuring the application is stateless to leverage Cloud Run's scaling capabilities.
-*   **Externalized Configuration**: Using Spring Boot's externalized configuration features to manage environment-specific properties (e.g., database connection strings, API keys) outside the Docker image.
-*   **Logging and Monitoring**: Integrating with Google Cloud Logging and Monitoring for application observability.
-
-## 9. Future Considerations
-
-*   **Asynchronous Operations**: For email notifications or other long-running tasks, consider using Spring's `@Async` or message queues (e.g., Google Cloud Pub/Sub).
-*   **Caching**: Implement caching (e.g., Spring Cache with Redis) for frequently accessed data to improve performance.
-*   **API Documentation**: Use OpenAPI (Swagger) for documenting REST APIs.
-*   **Error Handling**: Implement global exception handling for consistent error responses.
+This technical design provides a roadmap for the modernization effort, ensuring a robust, maintainable, and cloud-ready Spring Boot application.

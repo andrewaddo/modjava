@@ -1,41 +1,51 @@
-Feature: Order Management
-  As a user of the e-commerce platform
-  I want to be able to place orders and track their shipping status
-  So that I can receive my purchased items
+Feature: Order Processing
 
-  Scenario: Place a New Order
-    Given I have items in my shopping cart
-    And I am logged in
+  As a user of the e-commerce platform
+  I want to be able to place an order for items in my shopping cart
+  So that I can purchase them
+
+  Scenario: Successful Order Placement
+    Given I am logged in
+    And my shopping cart contains items
     When I proceed to checkout
-    And I provide valid payment and shipping information
+    And I provide valid payment information
     And I confirm the order
-    Then a new order should be created successfully
-    And I should receive an order confirmation
+    Then an order should be successfully placed
     And my shopping cart should be emptied
+    And I should receive an order confirmation email
+    And the order details should be recorded in my order history
+
+  Scenario: Order Placement with Empty Cart
+    Given I am logged in
+    And my shopping cart is empty
+    When I attempt to proceed to checkout
+    Then I should be prevented from placing an order
+    And I should see a message indicating my cart is empty
+
+  Scenario: Order Placement with Invalid Payment Information
+    Given I am logged in
+    And my shopping cart contains items
+    When I proceed to checkout
+    And I provide invalid payment information
+    And I confirm the order
+    Then the order should not be placed
+    And I should see an error message indicating payment failure
+    And my shopping cart should retain its items
+
+  As a user of the e-commerce platform
+  I want to be able to view my past orders
+  So that I can track their status and review my purchase history
 
   Scenario: View Order History
     Given I am logged in
-    And I have previously placed orders
-    When I navigate to my order history
+    And I have placed previous orders
+    When I navigate to my order history page
     Then I should see a list of all my past orders
-    And for each order, I should see details like order ID, date, total amount, and status
+    And for each order, I should see its ID, date, total amount, and current shipping status
 
-  Scenario: Track Order Shipping Status
-    Given I have a placed order
-    And I am logged in
-    When I view the details of a specific order
-    Then I should see the current shipping status of that order (e.g., 'shipped', 'pending')
-
-  Scenario: Admin Views All Orders
-    Given I am logged in as an administrator
-    When I navigate to the admin order management section
-    Then I should see a list of all customer orders
-    And I should be able to filter or sort orders by status (e.g., shipped, unshipped)
-
-  Scenario: Admin Updates Order Shipping Status
-    Given I am logged in as an administrator
-    And there is an unshipped order
-    When I select an unshipped order
-    And I update its status to 'shipped'
-    Then the order's shipping status should be updated
-    And the user should be able to see the updated status
+  Scenario: View Details of a Specific Order
+    Given I am logged in
+    And I have placed an order
+    When I select a specific order from my order history
+    Then I should see the detailed information for that order
+    And the details should include all products ordered, their quantities, and individual prices

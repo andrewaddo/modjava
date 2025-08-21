@@ -1,190 +1,120 @@
-# Database Schema
+# Database Schema Analysis
 
 This document outlines the database schema for the `shopping-cart` application, reverse-engineered from `mysql_query.sql`.
 
-## Tables
+## Schema Overview
+
+The database consists of the following tables:
+
+*   `product`: Stores product information.
+*   `orders`: Records order details, linking products to specific orders.
+*   `user`: Manages user accounts.
+*   `transactions`: Logs payment transactions.
+*   `user_demand`: Tracks user demand for out-of-stock products.
+*   `usercart`: Stores items currently in a user's shopping cart.
+
+## Table Details
 
 ### `product`
 
-Stores information about products available in the store.
+Stores details about each product available in the store.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `pid`     | VARCHAR(45) | Primary Key, Unique Product Identifier    |
-| `pname`   | VARCHAR(100)| Product Name                              |
-| `ptype`   | VARCHAR(20) | Product Type (e.g., mobile, laptop, tv)   |
-| `pinfo`   | VARCHAR(350)| Product Information/Description           |
-| `pprice`  | DECIMAL(12,2)| Product Price                             |
-| `pquantity`| INT         | Available Quantity of the Product         |
-| `image`   | LONGBLOB    | Product Image (Binary Data)               |
-
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`product` (
-  `pid` VARCHAR(45) NOT NULL,
-  `pname` VARCHAR(100) NULL DEFAULT NULL,
-  `ptype` VARCHAR(20) NULL DEFAULT NULL,
-  `pinfo` VARCHAR(350) NULL DEFAULT NULL,
-  `pprice` DECIMAL(12,2) NULL DEFAULT NULL,
-  `pquantity` INT NULL DEFAULT NULL,
-  `image` LONGBLOB NULL DEFAULT NULL,
-  PRIMARY KEY (`pid`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `pid`     | `VARCHAR(45)` | `PRIMARY KEY`    | Unique product identifier.                |
+| `pname`   | `VARCHAR(100)`| `NULL`           | Product name.                             |
+| `ptype`   | `VARCHAR(20)` | `NULL`           | Product type/category (e.g., 'mobile', 'laptop'). |
+| `pinfo`   | `VARCHAR(350)`| `NULL`           | Detailed product information.             |
+| `pprice`  | `DECIMAL(12,2)`| `NULL`           | Product price.                            |
+| `pquantity`| `INT`         | `NULL`           | Available quantity of the product.        |
+| `image`   | `LONGBLOB`    | `NULL`           | Binary data for product image.            |
 
 ### `orders`
 
-Records details of customer orders.
+Records individual product items within an order. An order can contain multiple products.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `orderid` | VARCHAR(45) | Primary Key, Unique Order Identifier      |
-| `prodid`  | VARCHAR(45) | Primary Key, Foreign Key to `product.pid` |
-| `quantity`| INT         | Quantity of the product in this order     |
-| `amount`  | DECIMAL(10,2)| Total amount for this product in the order|
-| `shipped` | INT         | Shipping status (0 for not shipped, 1 for shipped) |
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `orderid` | `VARCHAR(45)` | `PRIMARY KEY`    | Identifier for the overall order.         |
+| `prodid`  | `VARCHAR(45)` | `PRIMARY KEY`, `FOREIGN KEY` (`product`) | Product identifier. |
+| `quantity`| `INT`         | `NULL`           | Quantity of the product in this order item. |
+| `amount`  | `DECIMAL(10,2)`| `NULL`           | Total amount for this specific product quantity in the order. |
+| `shipped` | `INT`         | `NOT NULL`, `DEFAULT 0` | Shipping status (0 for not shipped, 1 for shipped). |
 
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`orders` (
-  `orderid` VARCHAR(45) NOT NULL,
-  `prodid` VARCHAR(45) NOT NULL,
-  `quantity` INT NULL DEFAULT NULL,
-  `amount` DECIMAL(10,2) NULL DEFAULT NULL,
-  `shipped` INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`orderid`, `prodid`),
-  INDEX `productid_idx` (`prodid` ASC) VISIBLE,
-  CONSTRAINT `productid`
-    FOREIGN KEY (`prodid`)
-    REFERENCES `shopping-cart`.`product` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+**Foreign Key:**
+*   `prodid` references `product(pid)`
 
 ### `user`
 
-Stores user account information.
+Stores user registration details.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `email`   | VARCHAR(60) | Primary Key, User's Email Address         |
-| `name`    | VARCHAR(30) | User's Full Name                          |
-| `mobile`  | BIGINT      | User's Mobile Number                      |
-| `address` | VARCHAR(250)| User's Shipping Address                   |
-| `pincode` | INT         | User's Pincode/Zip Code                   |
-| `password`| VARCHAR(20) | User's Account Password                   |
-
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`user` (
-  `email` VARCHAR(60) NOT NULL,
-  `name` VARCHAR(30) NULL DEFAULT NULL,
-  `mobile` BIGINT NULL DEFAULT NULL,
-  `address` VARCHAR(250) NULL DEFAULT NULL,
-  `pincode` INT NULL DEFAULT NULL,
-  `password` VARCHAR(20) NULL DEFAULT NULL,
-  PRIMARY KEY (`email`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `email`   | `VARCHAR(60)` | `PRIMARY KEY`    | User's email address (used as unique identifier). |
+| `name`    | `VARCHAR(30)` | `NULL`           | User's full name.                         |
+| `mobile`  | `BIGINT`      | `NULL`           | User's mobile number.                     |
+| `address` | `VARCHAR(250)`| `NULL`           | User's shipping address.                  |
+| `pincode` | `INT`         | `NULL`           | Postal code for the address.              |
+| `password`| `VARCHAR(20)` | `NULL`           | User's password (Note: In a real application, this should be hashed). |
 
 ### `transactions`
 
-Logs all payment transactions.
+Records payment transactions, linking them to users and orders.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `transid` | VARCHAR(45) | Primary Key, Unique Transaction Identifier|
-| `username`| VARCHAR(60) | Foreign Key to `user.email`               |
-| `time`    | DATETIME    | Timestamp of the transaction              |
-| `amount`  | DECIMAL(10,2)| Transaction Amount                        |
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `transid` | `VARCHAR(45)` | `PRIMARY KEY`, `FOREIGN KEY` (`orders`) | Unique transaction identifier, also links to `orderid`. |
+| `username`| `VARCHAR(60)` | `NULL`, `FOREIGN KEY` (`user`) | User's email who made the transaction. |
+| `time`    | `DATETIME`    | `NULL`           | Timestamp of the transaction.             |
+| `amount`  | `DECIMAL(10,2)`| `NULL`           | Total amount of the transaction.          |
 
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`transactions` (
-  `transid` VARCHAR(45) NOT NULL,
-  `username` VARCHAR(60) NULL DEFAULT NULL,
-  `time` DATETIME NULL DEFAULT NULL,
-  `amount` DECIMAL(10,2) NULL DEFAULT NULL,
-  PRIMARY KEY (`transid`),
-  INDEX `truserid_idx` (`username` ASC) VISIBLE,
-  CONSTRAINT `truserid`
-    FOREIGN KEY (`username`)
-    REFERENCES `shopping-cart`.`user` (`email`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `transorderid`
-    FOREIGN KEY (`transid`)
-    REFERENCES `shopping-cart`.`orders` (`orderid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+**Foreign Keys:**
+*   `username` references `user(email)`
+*   `transid` references `orders(orderid)` (This implies a 1-to-1 relationship between a transaction and an order, where `transid` is also the `orderid`).
 
 ### `user_demand`
 
-Tracks products for which users have expressed demand (e.g., back-in-stock notifications).
+Tracks user requests for products that are currently out of stock.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `username`| VARCHAR(60) | Primary Key, Foreign Key to `user.email`  |
-| `prodid`  | VARCHAR(45) | Primary Key, Foreign Key to `product.pid` |
-| `quantity`| INT         | Demanded Quantity                         |
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `username`| `VARCHAR(60)` | `PRIMARY KEY`, `FOREIGN KEY` (`user`) | User's email who demanded the product. |
+| `prodid`  | `VARCHAR(45)` | `PRIMARY KEY`, `FOREIGN KEY` (`product`) | Product identifier that is in demand. |
+| `quantity`| `INT`         | `NULL`           | Quantity of the product demanded by the user. |
 
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`user_demand` (
-  `username` VARCHAR(60) NOT NULL,
-  `prodid` VARCHAR(45) NOT NULL,
-  `quantity` INT NULL DEFAULT NULL,
-  PRIMARY KEY (`username`, `prodid`),
-  INDEX `prodid_idx` (`prodid` ASC) VISIBLE,
-  CONSTRAINT `userdemailemail`
-    FOREIGN KEY (`username`)
-    REFERENCES `shopping-cart`.`user` (`email`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `prodid`
-    FOREIGN KEY (`prodid`)
-    REFERENCES `shopping-cart`.`product` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+**Foreign Keys:**
+*   `username` references `user(email)`
+*   `prodid` references `product(pid)`
 
 ### `usercart`
 
-Stores items currently in a user's shopping cart.
+Stores items that users have added to their shopping carts.
 
-| Column    | Type        | Description                               |
-| :-------- | :---------- | :---------------------------------------- |
-| `username`| VARCHAR(60) | Foreign Key to `user.email`               |
-| `prodid`  | VARCHAR(45) | Foreign Key to `product.pid`              |
-| `quantity`| INT         | Quantity of the product in the cart       |
+| Column    | Type          | Constraints      | Description                               |
+| :-------- | :------------ | :--------------- | :---------------------------------------- |
+| `username`| `VARCHAR(60)` | `NULL`, `FOREIGN KEY` (`user`) | User's email whose cart this item belongs to. |
+| `prodid`  | `VARCHAR(45)` | `NULL`, `FOREIGN KEY` (`product`) | Product identifier in the cart. |
+| `quantity`| `INT`         | `NULL`           | Quantity of the product in the cart.      |
 
-```sql
-CREATE TABLE IF NOT EXISTS `shopping-cart`.`usercart` (
-  `username` VARCHAR(60) NULL DEFAULT NULL,
-  `prodid` VARCHAR(45) NULL DEFAULT NULL,
-  `quantity` INT NULL DEFAULT NULL,
-  INDEX `useremail_idx` (`username` ASC) VISIBLE,
-  INDEX `prodidcart_idx` (`prodid` ASC) VISIBLE,
-  CONSTRAINT `useremail`
-    FOREIGN KEY (`username`)
-    REFERENCES `shopping-cart`.`user` (`email`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `prodidcart`
-    FOREIGN KEY (`prodid`)
-    REFERENCES `shopping-cart`.`product` (`pid`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-```
+**Foreign Keys:**
+*   `username` references `user(email)`
+*   `prodid` references `product(pid)`
+
+## Relationships
+
+The following relationships exist between the tables:
+
+*   **`product`** is referenced by:
+    *   `orders` (one-to-many: one product can be in many order items)
+    *   `user_demand` (one-to-many: one product can be demanded by many users)
+    *   `usercart` (one-to-many: one product can be in many user carts)
+
+*   **`user`** is referenced by:
+    *   `transactions` (one-to-many: one user can have many transactions)
+    *   `user_demand` (one-to-many: one user can demand many products)
+    *   `usercart` (one-to-many: one user can have many items in their cart)
+
+*   **`orders`** is referenced by:
+    *   `transactions` (one-to-one: one order has one transaction, where `transid` in `transactions` is also `orderid` in `orders`).
+
+This concludes the database schema analysis.
