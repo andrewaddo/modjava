@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Order Confirmation</h2>
+    <div class="alert alert-success" role="alert">
+        Your order has been placed successfully!
+    </div>
+    <p><strong>Order ID:</strong> <span th:text="${orderId}"></span></p>
+
+    <h4>Order Details:</h4>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Shipped Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id.prodid}"></td>
+            <td th:text="${order.quantity}"></td>
+            <td th:text="${order.amount}"></td>
+            <td th:text="${order.shipped == 1 ? 'Shipped' : 'Pending'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>Thank you for your purchase!</p>
+    <a href="/userHome" class="btn btn-primary">Go to User Home</a>
+    <a href="/products" class="btn btn-secondary">Continue Shopping</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Track Order</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Track Order: <span th:text="${orderId}"></span></h2>
+
+    <div th:if="${orders.isEmpty()}">
+        <p>No details found for this order ID.</p>
+    </div>
+
+    <div th:unless="${orders.isEmpty()}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Shipped Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id.prodid}"></td>
+                <td th:text="${order.quantity}"></td>
+                <td th:text="${order.amount}"></td>
+                <td th:text="${order.shipped == 1 ? 'Shipped' : 'Pending'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <a href="/orderHistory" class="btn btn-secondary">Back to Order History</a>
+</div>
+</body>
+</html>
