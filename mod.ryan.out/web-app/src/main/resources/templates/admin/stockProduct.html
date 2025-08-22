@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Stock</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/changes.css">
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+    <h2>Manage Product Stock</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Current Quantity</th>
+            <th>New Quantity</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.pid}"></td>
+            <td th:text="${product.pname}"></td>
+            <td th:text="${product.pquantity}"></td>
+            <td>
+                <form th:action="@{/admin/products/stock/update}" method="post">
+                    <input type="hidden" name="pid" th:value="${product.pid}">
+                    <input type="number" name="quantity" th:value="${product.pquantity}" class="form-control" required>
+            </td>
+            <td>
+                <button type="submit" class="btn btn-primary btn-sm">Update Stock</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update Product</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/changes.css">
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container">
+    <h2>Update Product</h2>
+    <form th:action="@{/admin/products/edit}" th:object="${product}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="pid">Product ID:</label>
+            <input type="text" id="pid" th:field="*{pid}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label for="pname">Product Name:</label>
+            <input type="text" id="pname" th:field="*{pname}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="ptype">Product Type:</label>
+            <input type="text" id="ptype" th:field="*{ptype}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="pinfo">Product Info:</label>
+            <textarea id="pinfo" th:field="*{pinfo}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="pprice">Price:</label>
+            <input type="number" id="pprice" th:field="*{pprice}" class="form-control" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="pquantity">Quantity:</label>
+            <input type="number" id="pquantity" th:field="*{pquantity}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="productImage">Product Image:</label>
+            <input type="file" id="productImage" name="productImage" class="form-control-file">
+            <img th:if="${product.image != null}" th:src="'data:image/jpeg;base64,' + ${T(java.util.Base64).getEncoder().encodeToString(product.image)}" width="100" height="100" class="mt-2"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Product</button>
+    </form>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
