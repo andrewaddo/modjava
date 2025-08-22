@@ -131,21 +131,18 @@ public class ProductServiceTest {
 
     @Test
     void testUpdateProduct_QuantityChange_NotifyBackInStock() {
-        Product productToUpdate = new Product("P001", "Laptop", "Electronics", "Info1", BigDecimal.valueOf(1200.00), 0, null);
+        Product initialProduct = new Product("P001", "Laptop", "Electronics", "Info1", BigDecimal.valueOf(1200.00), 0, null);
+        Product productWithNewQuantity = new Product("P001", "Laptop", "Electronics", "Info1", BigDecimal.valueOf(1200.00), 8, null); // New quantity > 0
         UserDemand userDemand = new UserDemand(new UserDemandId("user@example.com", "P001"), 1);
         User user = new User("user@example.com", "Test User", null, null, null, null);
 
-        when(productRepository.findById("P001")).thenReturn(Optional.of(productToUpdate));
-        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> {
-            Product savedProduct = invocation.getArgument(0);
-            savedProduct.setPquantity(8); // Simulate quantity update
-            return savedProduct;
-        });
+        when(productRepository.findById("P001")).thenReturn(Optional.of(initialProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(productWithNewQuantity); // Return the product with new quantity
         when(userDemandRepository.findById_Prodid("P001")).thenReturn(Arrays.asList(userDemand));
         when(userService.getUserByEmail("user@example.com")).thenReturn(user);
         doNothing().when(emailService).sendBackInStockNotification(anyString(), anyString(), anyString());
 
-        boolean result = productService.updateProduct(productToUpdate);
+        boolean result = productService.updateProduct(productWithNewQuantity); // Pass the product with new quantity
 
         assertTrue(result);
         verify(productRepository, times(1)).findById("P001");

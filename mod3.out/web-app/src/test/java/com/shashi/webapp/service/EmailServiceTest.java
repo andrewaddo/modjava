@@ -55,7 +55,7 @@ public class EmailServiceTest {
         emailService.sendShippingUpdate(email, orderId, prodid, username);
         String expectedOutput = "Sending shipping update to: " + email + "\n" +
                                 "Subject: Your Order " + orderId + " has been Shipped!\n" +
-                                "Body: Dear " + username + ",\n\nGood news! Your item " + prodid + " from order " + orderId + " has been shipped.\n\nThank you,\nThe Shopping Cart Team\n";
+                                "Body: Dear " + username + ",\n\nGood news! The product " + prodid + " from order " + orderId + " has been shipped.\n\nThank you,\nThe Shopping Cart Team\n";
         assertEquals(expectedOutput, outContent.toString());
     }
 

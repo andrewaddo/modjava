@@ -20,25 +20,25 @@ My mission is to execute a comprehensive, phased migration of the legacy `shoppi
 
 *   **Application Name**: shopping-cart
 *   **Legacy Application Root**: `./shopping-cart/`
-*   **New Application Root**: `./mod.ryan.out/`
+*   **New Application Root**: `./mod3.out/`
 *   **Application Overview**: The project is an e-commerce platform. Users can register, log in, browse products, manage a shopping cart, and place orders. Once an order is paid for, users can track its shipping status. The system also features an admin panel for managing products (adding, updating, removing, inventory control) and viewing all customer orders. A key feature is the email notification system, which sends confirmations for user registration, order placement, and shipping updates, as well as back-in-stock notifications for subscribed items.
 
 ## 5. Phased Migration Plan
 
 ### Phase 0: Initialization
 
-1.  Create a new Git branch named `feature/modern-migration-ryan`. All work will be done on this branch.
+1.  Create a new Git branch named `feature/modern-migration-3`. All work will be done on this branch.
 
 ### Phase 1: Legacy Application Analysis & Documentation
 
-1.  **Database Schema Analysis**: I will start by locating the data source configuration and any SQL scripts (`.sql`) within the `./shopping-cart` directory to understand the database structure. If a schema file is not present, I will infer the schema by analyzing the Java data-access objects and bean classes (e.g., `UserBean.java`, `ProductBean.java`) to reverse-engineer the table structure, columns, types, and relationships. This will be documented in `./mod.ryan.out/gemini-docs/1-database-schema.md`.
-2.  **Identify Core Features**: By analyzing the database schema and application entry points (Servlets in `com.shashi.srv` and JSP files in `WebContent`), I will identify and document the core user stories and features. This includes user authentication, product catalog management, shopping cart operations, order processing, and admin functions. Each feature will be documented in Gherkin format in a separate markdown file under `./mod.ryan.out/gemini-docs/2-features/`.
-3.  **Technical Design for Modernization**: I will create a technical design document for the new Spring Boot application. This document will outline the new project structure, key libraries (Spring Web, Spring Data JPA, Thymeleaf for server-side rendering, Spring Security, JUnit 5, Testcontainers, and Selenium), architectural patterns (e.g., layered architecture: Controller-Service-Repository), and a database migration strategy to PostgreSQL. This will be delivered as `./mod.ryan.out/gemini-docs/3-technical-design.md`.
+1.  **Database Schema Analysis**: I will start by locating the data source configuration and any SQL scripts (`.sql`) within the `./shopping-cart` directory to understand the database structure. If a schema file is not present, I will infer the schema by analyzing the Java data-access objects and bean classes (e.g., `UserBean.java`, `ProductBean.java`) to reverse-engineer the table structure, columns, types, and relationships. This will be documented in `./mod3.out/gemini-docs/1-database-schema.md`.
+2.  **Identify Core Features**: By analyzing the database schema and application entry points (Servlets in `com.shashi.srv` and JSP files in `WebContent`), I will identify and document the core user stories and features. This includes user authentication, product catalog management, shopping cart operations, order processing, and admin functions. Each feature will be documented in Gherkin format in a separate markdown file under `./mod3.out/gemini-docs/2-features/`.
+3.  **Technical Design for Modernization**: I will create a technical design document for the new Spring Boot application. This document will outline the new project structure, key libraries (Spring Web, Spring Data JPA, Thymeleaf for server-side rendering, Spring Security, JUnit 5, Testcontainers, and Selenium), architectural patterns (e.g., layered architecture: Controller-Service-Repository), and a database migration strategy to PostgreSQL. This will be delivered as `./mod3.out/gemini-docs/3-technical-design.md`.
 4.  **Commit & Pause**: Commit all generated documentation to Git with the message `docs: Analyze legacy application and propose modern design`. Then, I will wait for instruction to proceed.
 
 ### Phase 2: Solution Scaffolding
 
-1.  Using the Spring Initializr (via `start.spring.io` or IDE integration), I will create a new multi-module Maven project in the `./mod.ryan.out/` directory. The project will include modules for the web application, data access, and testing, as defined in the technical design.
+1.  Using the Spring Initializr (via `start.spring.io` or IDE integration), I will create a new multi-module Maven project in the `./mod3.out/` directory. The project will include modules for the web application, data access, and testing, as defined in the technical design.
 2.  **Commit & Pause**: Commit the initial project structure with the message `feat: Scaffold Spring Boot solution and project structure`. Then, I will wait for instruction to proceed.
 
 ### Phase 3: Feature Migration with Unit Tests
@@ -60,10 +60,10 @@ For each completed user journey (e.g., "User adds product to cart and checks out
 
 ## 6. Final Deliverables & Success Criteria
 
-*   A fully functional and stable Spring Boot application in the `./mod.ryan.out/` directory with 100% feature parity.
+*   A fully functional and stable Spring Boot application in the `./mod3.out/` directory with 100% feature parity.
 *   The project must have **>90% unit test coverage**.
 *   Critical user journeys must be covered by **end-to-end integration tests**.
-*   All work committed to the `feature/modern-migration-ryan` branch.
+*   All work committed to the `feature/modern-migration-3` branch.
 *   Clean, well-documented, and production-ready code.
 
 ## 7. Constraints

@@ -51,6 +51,8 @@ public class ProductService {
         Optional<Product> existingProductOptional = productRepository.findById(product.getPid());
         if (existingProductOptional.isPresent()) {
             Product existingProduct = existingProductOptional.get();
+            int originalQuantity = existingProduct.getPquantity(); // Capture original quantity
+
             // Update product details
             existingProduct.setPname(product.getPname());
             existingProduct.setPtype(product.getPtype());
@@ -63,7 +65,7 @@ public class ProductService {
             Product updatedProduct = productRepository.save(existingProduct);
 
             // Check for back-in-stock notification if quantity changed from 0 to > 0
-            if (existingProduct.getPquantity() == 0 && updatedProduct.getPquantity() > 0) {
+            if (originalQuantity == 0 && updatedProduct.getPquantity() > 0) {
                 notifyBackInStock(updatedProduct);
             }
             return true;
