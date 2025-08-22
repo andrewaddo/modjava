@@ -1,18 +1,29 @@
-
 Feature: Order Management
 
-  Scenario: Place an order
-    Given a user has items in their shopping cart
+  Scenario: Checkout and place an order
+    Given a logged-in user has items in their shopping cart
     When they proceed to checkout
-    And confirm the order
+    And they provide their shipping and payment information
+    And they confirm the order
     Then a new order should be created
+    And the items in the cart should be cleared
 
   Scenario: View order details
-    Given a user has placed an order
-    When they navigate to their order history
-    Then they should see the details of their past orders
+    Given a logged-in user has placed an order
+    When they navigate to the 'Order Details' page
+    Then they should see the details of their order, including the items, quantities, and total price
 
-  Scenario: Track shipment
-    Given an order has been shipped
-    When the user views the order details
-    Then they should see the shipping status
+  Scenario: View shipped items (Admin)
+    Given an admin is on the 'Shipped Items' page
+    When they view the list of shipped items
+    Then they should see a list of all orders that have been shipped
+
+  Scenario: View unshipped items (Admin)
+    Given an admin is on the 'Unshipped Items' page
+    When they view the list of unshipped items
+    Then they should see a list of all orders that have not yet been shipped
+
+  Scenario: Mark an order as shipped (Admin)
+    Given an admin is viewing an unshipped order
+    When they mark the order as shipped
+    Then the order's status should be updated to 'shipped'

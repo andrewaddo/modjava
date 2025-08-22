@@ -1,77 +1,75 @@
-
 # Database Schema
 
-This document outlines the database schema for the `shopping-cart` application, as inferred from the `mysql_query.sql` file.
+This document outlines the database schema for the `shopping-cart` application, as inferred from the `shopping-cart/databases/mysql_query.sql` file.
 
 ## Tables
 
 ### `product`
 
-Stores product information.
+Stores information about the products available in the store.
 
-| Column      | Type          | Description                   |
-|-------------|---------------|-------------------------------|
-| `pid`       | VARCHAR(45)   | Primary Key, Product ID       |
-| `pname`     | VARCHAR(100)  | Product Name                  |
-| `ptype`     | VARCHAR(20)   | Product Type (e.g., 'mobile') |
-| `pinfo`     | VARCHAR(350)  | Product Information           |
-| `pprice`    | DECIMAL(12,2) | Product Price                 |
-| `pquantity` | INT           | Product Quantity in stock     |
-| `image`     | LONGBLOB      | Product Image                 |
+| Column      | Type          | Description                                   |
+|-------------|---------------|-----------------------------------------------|
+| `pid`       | VARCHAR(45)   | The unique identifier for the product.        |
+| `pname`     | VARCHAR(100)  | The name of the product.                      |
+| `ptype`     | VARCHAR(20)   | The type or category of the product.          |
+| `pinfo`     | VARCHAR(350)  | A description of the product.                 |
+| `pprice`    | DECIMAL(12,2) | The price of the product.                     |
+| `pquantity` | INT           | The quantity of the product in stock.         |
+| `image`     | LONGBLOB      | The product image.                            |
 
 ### `orders`
 
-Stores information about items in an order.
+Stores information about customer orders.
 
-| Column    | Type         | Description                                         |
-|-----------|--------------|-----------------------------------------------------|
-| `orderid` | VARCHAR(45)  | Part of the Primary Key, Foreign Key to `transactions` |
-| `prodid`  | VARCHAR(45)  | Part of the Primary Key, Foreign Key to `product`      |
-| `quantity`| INT          | Quantity of the product in the order                |
-| `amount`  | DECIMAL(10,2)| Amount for this item in the order                   |
-| `shipped` | INT          | Shipping status (0 for not shipped, 1 for shipped)  |
+| Column    | Type          | Description                                         |
+|-----------|---------------|-----------------------------------------------------|
+| `orderid` | VARCHAR(45)   | The unique identifier for the order.                |
+| `prodid`  | VARCHAR(45)   | The ID of the product that was ordered.             |
+| `quantity`| INT           | The quantity of the product that was ordered.       |
+| `amount`  | DECIMAL(10,2) | The total amount for this part of the order.        |
+| `shipped` | INT           | A flag indicating whether the order has been shipped. |
 
 ### `user`
 
-Stores user information.
+Stores information about registered users.
 
-| Column    | Type         | Description      |
-|-----------|--------------|------------------|
-| `email`   | VARCHAR(60)  | Primary Key, User's email |
-| `name`    | VARCHAR(30)  | User's name      |
-| `mobile`  | BIGINT       | User's mobile number |
-| `address` | VARCHAR(250) | User's address   |
-| `pincode` | INT          | Pincode of the user's address |
-| `password`| VARCHAR(20)  | User's password  |
+| Column    | Type          | Description                             |
+|-----------|---------------|-----------------------------------------|
+| `email`   | VARCHAR(60)   | The user's email address (primary key). |
+| `name`    | VARCHAR(30)   | The user's name.                        |
+| `mobile`  | BIGINT        | The user's mobile phone number.         |
+| `address` | VARCHAR(250)  | The user's shipping address.            |
+| `pincode` | INT           | The user's postal code.                 |
+| `password`| VARCHAR(20)   | The user's password.                    |
 
 ### `transactions`
 
-Stores transaction information.
+Stores information about financial transactions.
 
-| Column   | Type         | Description                        |
-|----------|--------------|------------------------------------|
-| `transid`| VARCHAR(45)  | Primary Key, Transaction ID        |
-| `username`| VARCHAR(60)  | Foreign Key to `user`              |
-| `time`   | DATETIME     | Time of the transaction            |
-| `amount` | DECIMAL(10,2)| Total amount of the transaction    |
+| Column     | Type          | Description                                      |
+|------------|---------------|--------------------------------------------------|
+| `transid`  | VARCHAR(45)   | The unique identifier for the transaction.       |
+| `username` | VARCHAR(60)   | The email of the user who made the transaction.  |
+| `time`     | DATETIME      | The date and time of the transaction.            |
+| `amount`   | DECIMAL(10,2) | The amount of the transaction.                   |
 
 ### `user_demand`
 
-Stores information about products demanded by users that are out of stock.
+Stores information about products that users have requested to be notified about when they are back in stock.
 
-| Column   | Type        | Description                     |
-|----------|-------------|---------------------------------|
-| `username`| VARCHAR(60) | Part of the Primary Key, Foreign Key to `user` |
-| `prodid` | VARCHAR(45) | Part of the Primary Key, Foreign Key to `product` |
-| `quantity`| INT         | Quantity demanded by the user   |
+| Column     | Type        | Description                                  |
+|------------|-------------|----------------------------------------------|
+| `username` | VARCHAR(60) | The email of the user making the demand.     |
+| `prodid`   | VARCHAR(45) | The ID of the product that is in demand.     |
+| `quantity` | INT         | The quantity of the product that is in demand. |
 
 ### `usercart`
 
-Stores items in a user's shopping cart.
+Stores the items in a user's shopping cart.
 
-| Column   | Type        | Description                     |
-|----------|-------------|---------------------------------|
-| `username`| VARCHAR(60) | Foreign Key to `user`           |
-| `prodid` | VARCHAR(45) | Foreign Key to `product`          |
-| `quantity`| INT         | Quantity of the product in the cart |
-
+| Column     | Type        | Description                               |
+|------------|-------------|-------------------------------------------|
+| `username` | VARCHAR(60) | The email of the user who owns the cart.  |
+| `prodid`   | VARCHAR(45) | The ID of the product in the cart.        |
+| `quantity` | INT         | The quantity of the product in the cart.  |

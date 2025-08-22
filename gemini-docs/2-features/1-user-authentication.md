@@ -1,22 +1,26 @@
-
 Feature: User Authentication
 
   Scenario: User Registration
-    Given a user is on the registration page
-    When they enter their details
-    And click the register button
+    Given a new user is on the registration page
+    When they enter their name, email, password, and other required details
+    And they submit the registration form
     Then a new user account should be created
-    And the user should be redirected to the login page
+    And the user should be logged in
 
   Scenario: User Login
-    Given a user is on the login page
+    Given a registered user is on the login page
     When they enter their email and password
-    And click the login button
-    Then the user should be authenticated
-    And they should be redirected to their home page
+    And they submit the login form
+    Then the user should be successfully logged in
+    And they should be redirected to their user dashboard
 
-  Scenario: User Logout
-    Given a logged-in user
-    When they click the logout button
-    Then the user session should be invalidated
-    And they should be redirected to the login page
+  Scenario: User Profile
+    Given a logged-in user is on their profile page
+    When they view their profile information
+    Then they should see their name, email, mobile number, and address
+
+  Scenario: Update User Profile
+    Given a logged-in user is on their profile page
+    When they update their name, mobile number, or address
+    And they save the changes
+    Then their profile information should be updated
