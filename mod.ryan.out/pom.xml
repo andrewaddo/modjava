@@ -16,9 +16,9 @@
     <description>Migration of J2EE shopping-cart to Spring Boot</description>
 
     <modules>
-        <module>web-app</module>
         <module>data-access</module>
         <module>service</module>
+        <module>web-app</module>
         <module>integration-tests</module>
     </modules>
 
@@ -93,6 +93,12 @@
                 <artifactId>flyway-core</artifactId>
                 <version>${flyway.version}</version>
             </dependency>
+        <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.32</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -118,7 +124,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.3.1</version>
                     <configuration>
-                        <skipTests>true</skipTests>
+                        <!-- Tests will be run by maven-failsafe-plugin for integration-tests module -->
                     </configuration>
                 </plugin>
                 <plugin>
