@@ -24,8 +24,8 @@ INSERT INTO product (pid, name, type, info, price, quantity, image) VALUES ('P20
 
 INSERT INTO orders (orderid, prodid, quantity, amount, shipped) VALUES ('TR10001', 'P20230423082243', 1, 125999, 0);
 
-INSERT INTO "user" (email, name, mobile, address, pincode, password, role) VALUES ('guest@gmail.com', 'Guest User', 9876543234, 'K.P Road, Gaya, Bihar - India', 879767, 'guest', 'USER');
-INSERT INTO "user" (email, name, mobile, address, pincode, password, role) VALUES ('admin@gmail.com', 'Admin User', 9876543459, 'ABC Colony, Newtown, West Bengal', 786890, 'admin', 'ADMIN');
+INSERT INTO "app_user" (email, name, mobile, address, pincode, password, role) VALUES ('guest@gmail.com', 'Guest User', 9876543234, 'K.P Road, Gaya, Bihar - India', 879767, 'guest', 'USER');
+INSERT INTO "app_user" (email, name, mobile, address, pincode, password, role) VALUES ('admin@gmail.com', 'Admin User', 9876543459, 'ABC Colony, Newtown, West Bengal', 786890, 'admin', 'ADMIN');
 
 INSERT INTO transactions (transid, username, "time", amount) VALUES ('TR10001', 'guest@gmail.com', '2023-04-23 09:26:56', 125999);
 

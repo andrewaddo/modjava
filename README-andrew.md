@@ -169,7 +169,7 @@ mvn -f mod.andrew.out/pom.xml clean install
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 
-mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > webapp.log 2>&1 &
+mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > mod.andrew.out/web-app/app.log 2>&1 &
 
 gsutil iam ch serviceAccount:p827859227929-dtoer1@gcp-sa-cloud-sql.iam.gserviceaccount.com:objectCreator gs://addo-modjava
 
