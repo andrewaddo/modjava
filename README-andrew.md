@@ -38,6 +38,37 @@ please check logs for error, restart the local web-app so I can contiously test 
 /p
 try the approach to run the app in the background, output the logs to a file so you can monitor. You can also conduct test      │
 │   with curl, identify error, and fix if any.
+/p - didn't work given how long the image binary is, the read-file step was truncated
+parse mysql_query.sql to extract product IDs and ignore the image data. Then, create a new data.sql without image data, a separate
+  update_images.sql with Cloud Storage URLs for each product's image, save the binary image data to files, and upload those files to
+  Cloud Storage. I'm beginning with image and product ID extraction.
+/p 
+parse mysql_query.sql to extract product IDs and ignore the image data. Then, create a new data.sql with the image as a url to the image , a separate
+  update_images.sql with Cloud Storage URLs for each product's image, create a dummy image file for each product, and upload those files to
+  Cloud Storage. I will fix those images manually later.
+/p
+update the code to the recent change to image from binary to now a url to the image
+/p
+why is there category_id in the product table? check the legacy code in shopping-cart if this field is there. Then WAIT         │
+│   for my instruction to proceed
+/p
+does category existing in the legacy code shopping-cart ? why is it in the new code mod.andrew.out ?
+/p
+does category existing in the legacy code shopping-cart ? why is it in the new code mod.andrew.out ? Ignore the generated       │
+│   code in mod2.out and mod3.out. Use the legacy code shopping-cart as a base of truth. You should not implement new logics        │
+│   unless is told to do so.
+/p
+step back, scan the code in mod.andrew.out, there are few warnings and errors in the code notified by my ide
+/p
+no, category_id is not even in the log!!! I checked and there is no tables in the shoppingcart database. Did you implement the   │
+│    schema.sql and data.sql to this database ?  
+```
+
+# Limitations
+
+```logs
+The most significant concern is the change in the orders table's primary key. This will break the application's ability to handle
+  multiple items within a single order.
 ```
 
 # Points
@@ -48,6 +79,8 @@ try the approach to run the app in the background, output the logs to a file so 
 1. Avoid asking the agent to leepfrog or complete 5 steps in one as it will face issues that it won't be able to get out off. Try to guide it in smaller step.
 1. Cloud Run in Argolis has a limitation of configuring public facing service programmatically. Debugging in Cloud Run is also much more restricted comparing to GKE. Let's use GKE instead of Cloud Run to ensure the deployment is working, before the approach using Cloud Run.
 1. In an IDE, e.g.e Eclipse, when there is a change to an element of the code e.g. rename id to pid, the changes will be cascaded to all other references. This is not the same behavior when the agent made a change, it did not cascade the changes to other places. This led to a very expensive regression changes process.
+1. The agent is definitely having limitation in managing cross-references between schema, data and java code when one change is required. For example, given the difficulty of migrating binary image data, we changed to use the URL to the image stored in GCS which is the better approach given the media can be cached. The agent couldn't identify all related places where the image is used to cascade the changes accordingly.
+1. For some reasons, the agent generated Category.java which was not there in the legacy code.
 ```
                                        
 # Logs
@@ -82,4 +115,6 @@ mvn -f mod.andrew.out/pom.xml clean install
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > webapp.log 2>&1 &
+
+gsutil iam ch serviceAccount:p827859227929-dtoer1@gcp-sa-cloud-sql.iam.gserviceaccount.com:objectCreator gs://addo-modjava
 ```

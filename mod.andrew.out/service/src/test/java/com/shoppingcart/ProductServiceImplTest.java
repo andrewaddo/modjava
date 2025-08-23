@@ -19,8 +19,7 @@ class ProductServiceImplTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock
-    private CategoryRepository categoryRepository;
+    
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -38,16 +37,13 @@ class ProductServiceImplTest {
         product.setPrice(10.0);
         product.setQuantity(10);
 
-        Category category = new Category();
-        category.setId("cat1");
-        category.setName("Test Category");
-        product.setCategory(category);
+        
 
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         Product savedProduct = productService.addProduct(product, null);
 
-        assertNotNull(savedProduct.getId());
+        assertNotNull(savedProduct.getPid());
         assertEquals("Test Product", savedProduct.getName());
         verify(productRepository, times(1)).save(product);
     }
@@ -55,7 +51,7 @@ class ProductServiceImplTest {
     @Test
     void testUpdateProduct() {
         Product existingProduct = new Product();
-        existingProduct.setId("1");
+        existingProduct.setPid("1");
         existingProduct.setName("Old Name");
         existingProduct.setInfo("Old Info");
         existingProduct.setPrice(5.0);
@@ -67,10 +63,7 @@ class ProductServiceImplTest {
         updatedProduct.setPrice(15.0);
         updatedProduct.setQuantity(15);
 
-        Category category = new Category();
-        category.setId("cat1");
-        category.setName("Test Category");
-        updatedProduct.setCategory(category);
+        
 
         when(productRepository.findById("1")).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
@@ -93,46 +86,27 @@ class ProductServiceImplTest {
     @Test
     void testGetAllProducts() {
         Product product1 = new Product();
-        product1.setId("1");
+        product1.setPid("1");
         Product product2 = new Product();
-        product2.setId("2");
+        product2.setPid("2");
 
-        when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
+        when(productRepository.findAllProducts()).thenReturn(Arrays.asList(product1, product2));
 
         List<Product> products = productService.getAllProducts();
 
         assertEquals(2, products.size());
-        verify(productRepository, times(1)).findAll();
+        verify(productRepository, times(1)).findAllProducts();
     }
 
-    @Test
-    void testGetProductsByCategory() {
-        Category category = new Category();
-        category.setId("cat1");
-        category.setName("Test Category");
-
-        Product product1 = new Product();
-        product1.setId("1");
-        product1.setCategory(category);
-
-        when(categoryRepository.findById("cat1")).thenReturn(Optional.of(category));
-        when(productRepository.findByCategory(category)).thenReturn(Arrays.asList(product1));
-
-        List<Product> products = productService.getProductsByCategory("cat1");
-
-        assertEquals(1, products.size());
-        assertEquals("1", products.get(0).getId());
-        verify(categoryRepository, times(1)).findById("cat1");
-        verify(productRepository, times(1)).findByCategory(category);
-    }
+    
 
     @Test
     void testSearchProducts() {
         Product product1 = new Product();
-        product1.setId("1");
+        product1.setPid("1");
         product1.setName("Test Product 1");
         Product product2 = new Product();
-        product2.setId("2");
+        product2.setPid("2");
         product2.setName("Another Product");
 
         when(productRepository.findByNameContainingIgnoreCase("test")).thenReturn(Arrays.asList(product1));
@@ -147,14 +121,14 @@ class ProductServiceImplTest {
     @Test
     void testGetProductById() {
         Product product = new Product();
-        product.setId("1");
+        product.setPid("1");
 
         when(productRepository.findById("1")).thenReturn(Optional.of(product));
 
         Product result = productService.getProductById("1");
 
         assertNotNull(result);
-        assertEquals("1", result.getId());
+        assertEquals("1", result.getPid());
     }
 
     @Test

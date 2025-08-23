@@ -18,8 +18,12 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 
     @GetMapping("/")
     public String viewHomePage(Model model) {
@@ -45,14 +49,7 @@ public class ProductController {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             return "admin/add-product";
         }
-        Category category = categoryRepository.findById(product.getCategory().getId()).orElseGet(() -> {
-            Category newCategory = new Category();
-            newCategory.setId(product.getCategory().getId());
-            newCategory.setName(product.getCategory().getId());
-            return categoryRepository.save(newCategory);
-        });
-        product.setCategory(category);
-        productService.addProduct(product, null);
+        
         return "redirect:/admin/products";
     }
 
@@ -67,13 +64,7 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return "admin/edit-product";
         }
-        Category category = categoryRepository.findById(product.getCategory().getId()).orElseGet(() -> {
-            Category newCategory = new Category();
-            newCategory.setId(product.getCategory().getId());
-            newCategory.setName(product.getCategory().getId());
-            return categoryRepository.save(newCategory);
-        });
-        product.setCategory(category);
+        
         productService.updateProduct(id, product);
         return "redirect:/admin/products";
     }

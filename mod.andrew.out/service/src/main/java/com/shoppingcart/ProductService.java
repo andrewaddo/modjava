@@ -14,7 +14,7 @@ public interface ProductService {
 
     List<Product> getAllProducts();
 
-    List<Product> getProductsByCategory(String categoryId);
+    
 
     List<Product> searchProducts(String keyword);
 

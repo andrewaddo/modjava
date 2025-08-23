@@ -37,7 +37,7 @@ class CartServiceImplTest {
         user.setEmail("test@test.com");
 
         Product product = new Product();
-        product.setId("1");
+        product.setPid("1");
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -56,7 +56,7 @@ class CartServiceImplTest {
         user.setEmail("test@test.com");
 
         Product product = new Product();
-        product.setId("1");
+        product.setPid("1");
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -80,7 +80,7 @@ class CartServiceImplTest {
         user.setEmail("test@test.com");
 
         Product product = new Product();
-        product.setId("1");
+        product.setPid("1");
 
         Cart cart = new Cart();
         cart.setUser(user);

@@ -13,7 +13,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Category</th>
+                    
                     <th>Price</th>
                     <th>Quantity</th>
                 </tr>
@@ -22,7 +22,7 @@
                 <tr th:each="product : ${products}">
                     <td th:text="${product.id}"></td>
                     <td th:text="${product.name}"></td>
-                    <td th:text="${product.category.name}"></td>
+                    
                     <td th:text="${product.price}"></td>
                     <td th:text="${product.quantity}"></td>
                 </tr>

@@ -15,13 +15,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    
 
     @Override
     public Product addProduct(Product product, InputStream image) {
         // For now, we are not handling the image
-        product.setId(UUID.randomUUID().toString());
+        product.setPid(UUID.randomUUID().toString());
         return productRepository.save(product);
     }
 
@@ -33,7 +32,7 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setInfo(product.getInfo());
             existingProduct.setPrice(product.getPrice());
             existingProduct.setQuantity(product.getQuantity());
-            existingProduct.setCategory(product.getCategory());
+            
             return productRepository.save(existingProduct);
         }
         return null;
@@ -46,17 +45,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAllProducts();
     }
 
-    @Override
-    public List<Product> getProductsByCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        if (category != null) {
-            return productRepository.findByCategory(category);
-        }
-        return null;
-    }
+    
 
     @Override
     public List<Product> searchProducts(String keyword) {

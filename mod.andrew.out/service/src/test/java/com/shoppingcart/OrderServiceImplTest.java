@@ -37,7 +37,7 @@ class OrderServiceImplTest {
         user.setEmail("test@test.com");
 
         Product product = new Product();
-        product.setId("1");
+        product.setPid("1");
         product.setPrice(10.0);
 
         CartItem cartItem = new CartItem();

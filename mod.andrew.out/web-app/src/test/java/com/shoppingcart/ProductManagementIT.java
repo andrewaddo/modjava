@@ -102,8 +102,7 @@ class ProductManagementIT {
         WebElement nameElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
         ((ChromeDriver) driver).executeScript("arguments[0].value = arguments[1];", nameElement, "Test Product");
 
-        WebElement categoryElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("category")));
-        ((ChromeDriver) driver).executeScript("arguments[0].value = arguments[1];", categoryElement, "Test Category");
+        
 
         WebElement infoElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("info")));
         ((ChromeDriver) driver).executeScript("arguments[0].value = arguments[1];", infoElement, "Test Info");

@@ -1,0 +1,23 @@
+-- update_images.sql
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423082243.jpg' WHERE pid = 'P20230423082243';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423083830.jpg' WHERE pid = 'P20230423083830';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084143.jpg' WHERE pid = 'P20230423084143';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084145.jpg' WHERE pid = 'P20230423084145';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084146.jpg' WHERE pid = 'P20230423084146';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084147.jpg' WHERE pid = 'P20230423084147';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084148.jpg' WHERE pid = 'P20230423084148';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084149.jpg' WHERE pid = 'P20230423084149';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084150.jpg' WHERE pid = 'P20230423084150';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084151.jpg' WHERE pid = 'P20230423084151';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084152.jpg' WHERE pid = 'P20230423084152';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084153.jpg' WHERE pid = 'P20230423084153';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084154.jpg' WHERE pid = 'P20230423084154';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084155.jpg' WHERE pid = 'P20230423084155';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084156.jpg' WHERE pid = 'P20230423084156';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084157.jpg' WHERE pid = 'P20230423084157';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084158.jpg' WHERE pid = 'P20230423084158';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084159.jpg' WHERE pid = 'P20230423084159';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084160.jpg' WHERE pid = 'P20230423084160';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084161.jpg' WHERE pid = 'P20230423084161';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084162.jpg' WHERE pid = 'P20230423084162';
+UPDATE product SET image = 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084144.jpg' WHERE pid = 'P20230423084144';
