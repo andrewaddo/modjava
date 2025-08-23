@@ -90,6 +90,9 @@ refer to the legacy styling in index.jsp, keep the div configuration the same st
   product details or checkout, avoiding clutter and promoting a guided purchasing workflow. I will explain this to the user.
 /p
 continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
+/p
+it seems like the user table may have a conflict with the system user table in postgres, can you double check? search the   │
+│    internet if needed  
 ```
 
 # Limitations
