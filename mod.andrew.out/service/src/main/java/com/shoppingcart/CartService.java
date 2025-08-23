@@ -1,9 +1,13 @@
 
 package com.shoppingcart;
 
+import java.util.List; // Added import
+
 public interface CartService {
 
-    Cart getCart(User user);
+    // Removed getCart method
+
+    List<UserCartItem> getAllCartItems(User user); // Added method
 
     void addProductToCart(User user, String productId, int quantity);
 

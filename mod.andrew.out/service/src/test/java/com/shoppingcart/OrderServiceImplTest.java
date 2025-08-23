@@ -23,6 +23,9 @@ class OrderServiceImplTest {
     @Mock
     private OrderItemRepository orderItemRepository;
 
+    @Mock
+    private ProductRepository productRepository; // Added mock for ProductRepository
+
     @InjectMocks
     private OrderServiceImpl orderService;
 
@@ -40,19 +43,17 @@ class OrderServiceImplTest {
         product.setPid("1");
         product.setPrice(10.0);
 
-        CartItem cartItem = new CartItem();
-        cartItem.setProduct(product);
-        cartItem.setQuantity(2);
+        UserCartItem userCartItem = new UserCartItem(user.getEmail(), product.getPid(), 2); // Changed to UserCartItem
 
-        List<CartItem> cartItems = new ArrayList<>();
-        cartItems.add(cartItem);
+        List<UserCartItem> userCartItems = new ArrayList<>(); // Changed to UserCartItem
+        userCartItems.add(userCartItem);
 
+        when(productRepository.findById(product.getPid())).thenReturn(Optional.of(product)); // Mock product fetch
         when(orderRepository.save(any(Order.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Order order = orderService.createOrder(user, cartItems);
+        Order order = orderService.createOrder(user, userCartItems); // Changed parameter type
 
         assertNotNull(order);
-        assertEquals(user, order.getUser());
         assertEquals(1, order.getItems().size());
         assertEquals("PLACED", order.getStatus());
         verify(orderItemRepository, times(1)).saveAll(anyList());

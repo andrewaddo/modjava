@@ -4,81 +4,61 @@ package com.shoppingcart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List; // Changed import from ArrayList to List
+import java.util.Optional; // Added import
 
 @Service
 public class CartServiceImpl implements CartService {
 
     @Autowired
-    private CartRepository cartRepository;
+    private UserCartItemRepository userCartItemRepository; // Changed to UserCartItemRepository
 
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private ProductRepository productRepository; // Keep ProductRepository
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Override
-    public Cart getCart(User user) {
-        Cart cart = cartRepository.findByUser(user);
-        if (cart == null) {
-            cart = new Cart();
-            cart.setUser(user);
-            cart.setItems(new ArrayList<>());
-            cartRepository.save(cart);
-        }
-        return cart;
-    }
+    // Removed getCart method
 
     @Override
     public void addProductToCart(User user, String productId, int quantity) {
-        Cart cart = getCart(user);
-        Product product = productRepository.findById(productId).orElse(null);
+        UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
+        Optional<UserCartItem> existingItem = userCartItemRepository.findById(id);
 
-        if (product != null) {
-            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
-            if (cartItem == null) {
-                cartItem = new CartItem();
-                cartItem.setCart(cart);
-                cartItem.setProduct(product);
-                cartItem.setQuantity(quantity);
-            } else {
-                cartItem.setQuantity(cartItem.getQuantity() + quantity);
-            }
-            cartItemRepository.save(cartItem);
+        if (existingItem.isPresent()) {
+            UserCartItem item = existingItem.get();
+            item.setQuantity(item.getQuantity() + quantity);
+            userCartItemRepository.save(item);
+        } else {
+            UserCartItem newItem = new UserCartItem(user.getEmail(), productId, quantity);
+            userCartItemRepository.save(newItem);
         }
     }
 
     @Override
     public void removeProductFromCart(User user, String productId) {
-        Cart cart = getCart(user);
-        Product product = productRepository.findById(productId).orElse(null);
-
-        if (product != null) {
-            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
-            if (cartItem != null) {
-                cartItemRepository.delete(cartItem);
-            }
-        }
+        UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
+        userCartItemRepository.deleteById(id);
     }
 
     @Override
     public void updateProductQuantity(User user, String productId, int quantity) {
-        Cart cart = getCart(user);
-        Product product = productRepository.findById(productId).orElse(null);
+        UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
+        Optional<UserCartItem> existingItem = userCartItemRepository.findById(id);
 
-        if (product != null) {
-            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
-            if (cartItem != null) {
-                cartItem.setQuantity(quantity);
-                cartItemRepository.save(cartItem);
-            }
+        if (existingItem.isPresent()) {
+            UserCartItem item = existingItem.get();
+            item.setQuantity(quantity);
+            userCartItemRepository.save(item);
         }
     }
 
     @Override
     public void clearCart(User user) {
-        Cart cart = getCart(user);
-        cartItemRepository.deleteByCart(cart);
+        List<UserCartItem> userCartItems = userCartItemRepository.findByUsername(user.getEmail());
+        userCartItemRepository.deleteAll(userCartItems);
+    }
+
+    @Override
+    public List<UserCartItem> getAllCartItems(User user) {
+        return userCartItemRepository.findByUsername(user.getEmail());
     }
 }

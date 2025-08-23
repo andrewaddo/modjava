@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder; // Added import
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -48,7 +49,8 @@ public class SecurityConfig {
             if (user == null) {
                 throw new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found");
             }
-            System.out.println("User: " + user.getEmail() + ", Role: " + user.getRole());
+            System.out.println("SecurityConfig: Loading user by email: " + email); // Debugging
+            System.out.println("SecurityConfig: User loaded: " + user.getEmail() + ", Role: " + user.getRole()); // Debugging
             return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
@@ -59,6 +61,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance(); // For testing only! Do NOT use in production.
     }
 }

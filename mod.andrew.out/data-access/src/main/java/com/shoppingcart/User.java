@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 public class User {
 
     @Id
@@ -35,6 +35,7 @@ public class User {
     @Size(min = 8, message = "Password should have at least 8 characters")
     private String password;
 
+    @Column(name = "role")
     private String role;
 
     public String getEmail() {

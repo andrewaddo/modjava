@@ -19,7 +19,7 @@ public class Order {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "username")
     private User user;
 
     @OneToMany(mappedBy = "order")

@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="item : ${cart.items}">
+                <tr th:each="item : ${cartItems}">
                     <td th:text="${item.product.name}"></td>
                     <td th:text="${item.product.price}"></td>
                     <td th:text="${item.quantity}"></td>
@@ -31,7 +31,7 @@
             </tbody>
         </table>
         <div class="text-right">
-            <h3>Total: <span th:text="${cart.items.stream().mapToDouble(item -> item.product.price * item.quantity).sum()}"></span></h3>
+            <h3>Total: <span th:text="${cartItems.stream().mapToDouble(item -> item.quantity * item.product.price).sum()}"></span></h3>
             <a href="/checkout" class="btn btn-primary">Checkout</a>
         </div>
     </div>

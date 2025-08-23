@@ -16,10 +16,13 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderItemRepository orderItemRepository;
+    private OrderItemRepository orderItemRepository; // Keep this for now, will investigate later
+
+    @Autowired
+    private ProductRepository productRepository; // Autowire ProductRepository to fetch product details
 
     @Override
-    public Order createOrder(User user, List<CartItem> cartItems) {
+    public Order createOrder(User user, List<UserCartItem> userCartItems) { // Changed parameter type
         Order order = new Order();
         order.setId(UUID.randomUUID().toString());
         order.setUser(user);
@@ -27,14 +30,19 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus("PLACED");
 
         List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem cartItem : cartItems) {
+        for (UserCartItem userCartItem : userCartItems) { // Iterate over UserCartItem
             OrderItem orderItem = new OrderItem();
             orderItem.setId(UUID.randomUUID().toString());
             orderItem.setOrder(order);
-            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getProduct().getPrice());
-            orderItems.add(orderItem);
+            
+            // Fetch product using prodid from UserCartItem
+            Product product = productRepository.findById(userCartItem.getProdid()).orElse(null);
+            if (product != null) {
+                orderItem.setProduct(product);
+                orderItem.setQuantity(userCartItem.getQuantity());
+                orderItem.setPrice(product.getPrice()); // Use product's price
+                orderItems.add(orderItem);
+            }
         }
 
         order.setItems(orderItems);

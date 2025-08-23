@@ -31,10 +31,8 @@ public class OrderController {
     @PostMapping("/orders/create")
     public String createOrder(@AuthenticationPrincipal(expression = "username") String username) {
         User user = userRepository.findById(username).orElse(null);
-        Cart cart = cartService.getCart(user);
-        orderService.createOrder(user, cart.getItems());
-        cart.getItems().clear();
-        cartService.getCart(user); // to update the cart
+        orderService.createOrder(user, cartService.getAllCartItems(user));
+        cartService.clearCart(user); // Clear the cart after creating the order
         return "redirect:/orders";
     }
 

@@ -93,6 +93,28 @@ continue monitor the app.log for errors. If there is error, stop the web-app pro
 /p
 it seems like the user table may have a conflict with the system user table in postgres, can you double check? search the   │
 │    internet if needed  
+/p
+applied quick fix to the table user by escape quote it in the select queries 
+/p
+there is an error in the log due to the clash between the user table and the postgres system user table. applied quick fix to   │
+│    the table user by escape quote it in the select queries
+/p
+you just finished the code migration. Now it's the testing phase. Roger ?
+/p
+For the testing phase, use the remote Cloud SQL instance shopping-cart-db, database shoppingcart, region asia-southeast1,   │
+│    project addo-argolis-demo. Roger?
+/p
+now, you just renamed the user table to app_user, scan the code for relevance plases to cascade this name change
+/p
+DO NOT INCLUDE the data.sql file in the unit or integration tests
+/p
+change the plan, test with local postgresql server instead of the Cloud SQL. Make changes so that schema.sql and data.sql can be │
+│     used to create database tables and populate data for local testing. 
+/p
+it's pointless (or hopeless) to expect the agent to be able to get it right the first time. Small steps. Test the app locally first!
+/p
+you just finished the code migration. Now it's the testing phase. Roger ?
+run the test locally, with the code not the built jar, continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
 ```
 
 # Limitations
@@ -150,4 +172,7 @@ mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > webapp.log 2>&1 &
 
 gsutil iam ch serviceAccount:p827859227929-dtoer1@gcp-sa-cloud-sql.iam.gserviceaccount.com:objectCreator gs://addo-modjava
+
+psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/schema.sql
+psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/data.sql
 ```
