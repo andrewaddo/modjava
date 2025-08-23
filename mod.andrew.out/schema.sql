@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS usercart CASCADE;
 DROP TABLE IF EXISTS user_demand CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
-DROP TABLE IF EXISTS "user" CASCADE;
+DROP TABLE IF EXISTS app_user CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
 
@@ -26,7 +26,7 @@ CREATE TABLE orders (
   CONSTRAINT productid FOREIGN KEY (prodid) REFERENCES product (pid)
 );
 
-CREATE TABLE "user" (
+CREATE TABLE app_user (
   email VARCHAR(60) NOT NULL,
   name VARCHAR(30) NULL DEFAULT NULL,
   mobile BIGINT NULL DEFAULT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE transactions (
   "time" TIMESTAMP NULL DEFAULT NULL,
   amount DECIMAL(10,2) NULL DEFAULT NULL,
   PRIMARY KEY (transid),
-  CONSTRAINT truserid FOREIGN KEY (username) REFERENCES "user" (email),
+  CONSTRAINT truserid FOREIGN KEY (username) REFERENCES app_user (email),
   CONSTRAINT transorderid FOREIGN KEY (transid) REFERENCES orders (orderid)
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE user_demand (
   prodid VARCHAR(45) NOT NULL,
   quantity INTEGER NULL DEFAULT NULL,
   PRIMARY KEY (username, prodid),
-  CONSTRAINT userdemailemail FOREIGN KEY (username) REFERENCES "user" (email),
+  CONSTRAINT userdemailemail FOREIGN KEY (username) REFERENCES app_user (email),
   CONSTRAINT prodid FOREIGN KEY (prodid) REFERENCES product (pid)
 );
 
@@ -60,6 +60,6 @@ CREATE TABLE usercart (
   username VARCHAR(60) NULL DEFAULT NULL,
   prodid VARCHAR(45) NULL DEFAULT NULL,
   quantity INTEGER NULL DEFAULT NULL,
-  CONSTRAINT useremail FOREIGN KEY (username) REFERENCES "user" (email),
+  CONSTRAINT useremail FOREIGN KEY (username) REFERENCES app_user (email),
   CONSTRAINT prodidcart FOREIGN KEY (prodid) REFERENCES product (pid)
 );
