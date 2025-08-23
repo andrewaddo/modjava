@@ -29,7 +29,15 @@ the proxy is running, run the app yourself, tell me how to test using the browse
 /p
 the original shopping-cart allows the user to access the default products page without logging in. Logging in is only           │
 │   required for cart and payment, etc. You are supposed to stay true to the original legacy app logics.                            
-
+/p
+user the database schema and script in the legacy shopping-cart folder to create necessary tables and data for the manual       │
+│   test. Convert to postgresql if needed. Save the new schema and data.sql in the same folder mod.andrew.out. DO NOT INCLUDE       │
+│   these in the unit or integration test. 
+/p
+please check logs for error, restart the local web-app so I can contiously test it
+/p
+try the approach to run the app in the background, output the logs to a file so you can monitor. You can also conduct test      │
+│   with curl, identify error, and fix if any.
 ```
 
 # Points
@@ -39,6 +47,7 @@ the original shopping-cart allows the user to access the default products page w
 1. The agent does not have the memory of the previous solutions, or might not have the ability to search widely for alternate solutions. For example, the issue with chromedirver in selenium tests. I would attempt to point it to specific solution as a reference to assist with the current problems. This has been proven to be able to unblock the agent.
 1. Avoid asking the agent to leepfrog or complete 5 steps in one as it will face issues that it won't be able to get out off. Try to guide it in smaller step.
 1. Cloud Run in Argolis has a limitation of configuring public facing service programmatically. Debugging in Cloud Run is also much more restricted comparing to GKE. Let's use GKE instead of Cloud Run to ensure the deployment is working, before the approach using Cloud Run.
+1. In an IDE, e.g.e Eclipse, when there is a change to an element of the code e.g. rename id to pid, the changes will be cascaded to all other references. This is not the same behavior when the agent made a change, it did not cascade the changes to other places. This led to a very expensive regression changes process.
 ```
                                        
 # Logs
@@ -67,4 +76,10 @@ Top local postgresql server
 sudo systemctl stop postgresql
 sudo systemctl disable postgresql
 sudo systemctl status postgresql
+
+mvn -f mod.andrew.out/pom.xml clean install
+
+mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
+
+mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run > webapp.log 2>&1 &
 ```
