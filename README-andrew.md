@@ -1,6 +1,8 @@
 # Prompts
 
 ```logs
+/p
+check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending. Please wait for my instructions before proceeding.
 /p 
 check git logs, local changes that are not yet committed, run an end-2-end test, and then give me a summary of what phases and sub-stages have you completed and what is pending. refer to mod2.out folder for the sample code, these modules worked fine there
 /p 
