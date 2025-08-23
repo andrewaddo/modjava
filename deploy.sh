@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Non-interactive deployment script for Shopping Cart application
+# Non-interactive deployment script for Shopping Cart application to GKE
 
 # --- Helper Functions ---
 
@@ -14,110 +14,118 @@ echo_red() {
 
 # --- Usage ---
 usage() {
-  echo "Usage: $0 <gke|cloudrun> <GCP_PROJECT_ID> <GCP_REGION> <DB_USERNAME_SECRET_NAME> <DB_PASSWORD_SECRET_NAME>"
+  echo "Usage: $0 <PROJECT_ID> <REGION> <DB_USER_PASSWORD> <CLOUD_SQL_CONNECTION_NAME>"
   exit 1
 }
 
 # --- Check for arguments ---
-if [ "$#" -ne 5 ]; then
+if [ "$#" -ne 4 ]; then
   usage
 fi
 
 # --- Assign arguments to variables ---
-DEPLOY_TARGET=$1
-GCP_PROJECT_ID=$2
-GCP_REGION=$3
-DB_USERNAME_SECRET_NAME=$4
-DB_PASSWORD_SECRET_NAME=$5
-
-# --- Cleanup Function ---
-cleanup() {
-  echo_green "\nCleaning up temporary files..."
-  rm -f gcp-deployment/gke-deployment.yaml
-  rm -f gcp-deployment/gke-service-account.yaml
-  rm -f gcp-deployment/secret-provider-class.yaml
-  rm -f cloudbuild.yaml
-}
-
-trap cleanup EXIT
+PROJECT_ID=$1
+REGION=$2
+DB_USER_PASSWORD=$3
+CLOUD_SQL_CONNECTION_NAME=$4
+CLUSTER_NAME="shopping-cart-cluster"
 
 # --- Main Script ---
-echo_green "Starting Shopping Cart Application Deployment..."
+echo_green "Starting Shopping Cart Application Deployment to GKE..."
 
-# --- Create Temporary Configuration Files ---
-echo_green "\nCreating temporary configuration files..."
-cp gcp-deployment/gke-deployment.yaml.template gcp-deployment/gke-deployment.yaml
-cp gcp-deployment/gke-service-account.yaml.template gcp-deployment/gke-service-account.yaml
-cp gcp-deployment/secret-provider-class.yaml.template gcp-deployment/secret-provider-class.yaml
-cp cloudbuild.yaml.template cloudbuild.yaml
+# Step 1: Build the Docker image
+echo_green "\nBuilding all modules with dependencies..."
+mvn clean install -U -f /home/ducdo/workspace/modjava/mod.andrew.out/pom.xml
+echo_green "\nBuilding the Docker image..."
+docker build --no-cache -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.andrew.out/web-app
 
-# --- Update Configuration Files ---
-echo_green "Updating configuration files with the provided values..."
+# Step 2: Push the Docker image to Google Container Registry
+echo_green "\nPushing the Docker image to Google Container Registry..."
+docker push gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT
 
-# Update gke-deployment.yaml
-sed -i "s|<YOUR-GCP-PROJECT-ID>|$GCP_PROJECT_ID|" gcp-deployment/gke-deployment.yaml
-
-# Update gke-service-account.yaml
-sed -i "s|<YOUR-GCP-PROJECT-ID>|$GCP_PROJECT_ID|" gcp-deployment/gke-service-account.yaml
-
-# Update secret-provider-class.yaml
-sed -i "s|<YOUR-GCP-PROJECT-ID>|$GCP_PROJECT_ID|" gcp-deployment/secret-provider-class.yaml
-
-# --- Deployment Logic ---
-if [ "$DEPLOY_TARGET" == "gke" ]; then
-  # --- GKE Deployment ---
-  echo_green "\nStarting GKE Deployment..."
-
-  echo "Installing kubectl and GKE auth plugin..."
-  gcloud components install kubectl -q
-  gcloud components install gke-gcloud-auth-plugin -q
-
-  # echo "Creating GKE cluster..."
-  # gcloud container clusters create-auto shopping-cart-cluster --region=$GCP_REGION
-
-  echo "Getting cluster credentials..."
-  gcloud container clusters get-credentials shopping-cart-cluster --region=$GCP_REGION
-
-  echo "Enabling Workload Identity..."
-  gcloud container clusters update shopping-cart-cluster --region=$GCP_REGION \
-    --workload-pool=$GCP_PROJECT_ID.svc.id.goog
-
-  echo "Creating Kubernetes Service Account..."
-  kubectl apply -f gcp-deployment/gke-service-account.yaml
-
-  echo "Creating IAM policy binding..."
-  PROJECT_NUMBER=$(gcloud projects describe $GCP_PROJECT_ID --format='value(projectNumber)')
-  gcloud iam service-accounts add-iam-policy-binding \
-    --role="roles/iam.workloadIdentityUser" \
-    --member="serviceAccount:$GCP_PROJECT_ID.svc.id.goog[default/gke-sa]" \
-    $PROJECT_NUMBER-compute@developer.gserviceaccount.com
-
-  echo "Installing Secret Manager CSI driver..."
-  gcloud container clusters update shopping-cart-cluster --region=$GCP_REGION \
-    --enable-secret-manager
-
-  echo "Deploying to GKE..."
-  kubectl apply -f gcp-deployment/secret-provider-class.yaml
-  kubectl apply -f gcp-deployment/gke-deployment.yaml
-  kubectl apply -f gcp-deployment/gke-service.yaml
-
-  echo_green "\nGKE deployment complete!"
-  echo "It may take a few minutes for the LoadBalancer to be provisioned."
-  echo "Run 'kubectl get services' to check the external IP address."
-
-elif [ "$DEPLOY_TARGET" == "cloudrun" ]; then
-  # --- Cloud Run Deployment ---
-  echo_green "\nStarting Cloud Run Deployment..."
-
-  # Update cloudbuild.yaml
-  sed -i "s|<YOUR-GCP-PROJECT-ID>|$GCP_PROJECT_ID|g" cloudbuild.yaml
-  sed -i "s|<YOUR-GCP-REGION>|$GCP_REGION|" cloudbuild.yaml
-
-  echo "Submitting Cloud Build job..."
-  gcloud builds submit --config cloudbuild.yaml .
-
-  echo_green "\nCloud Run deployment complete!"
+# Step 3: Check and create GKE cluster if it doesn't exist
+echo_green "\nChecking for GKE cluster..."
+if ! gcloud container clusters describe ${CLUSTER_NAME} --region ${REGION} --project ${PROJECT_ID} &> /dev/null; then
+  echo_green "GKE cluster ${CLUSTER_NAME} not found. Creating..."
+  gcloud container clusters create ${CLUSTER_NAME} --region ${REGION} --project ${PROJECT_ID} --num-nodes=1
 else
-    echo_red "Invalid deployment target specified. Please use 'gke' or 'cloudrun'."
-    usage
+  echo_green "GKE cluster ${CLUSTER_NAME} already exists."
 fi
+
+# Step 4: Get kubectl credentials
+echo_green "\nGetting kubectl credentials..."
+gcloud container clusters get-credentials ${CLUSTER_NAME} --region ${REGION} --project ${PROJECT_ID}
+
+# Step 5: Deploy to GKE using Kubernetes manifests
+echo_green "\nDeploying to GKE..."
+# Create k8s directory if it doesn't exist
+mkdir -p k8s
+
+# Create Kubernetes Deployment manifest
+cat <<EOF > k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart-web-app
+  labels:
+    app: shopping-cart-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-cart-web-app
+  template:
+    metadata:
+      labels:
+        app: shopping-cart-web-app
+    spec:
+      serviceAccountName: shopping-cart-ksa
+      containers:
+      - name: shopping-cart-web-app
+        image: gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql:///shop18cart?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "testuser"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "${DB_USER_PASSWORD}"
+      # Cloud SQL Proxy sidecar
+      - name: cloudsql-proxy
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+        args: ["${CLOUD_SQL_CONNECTION_NAME}", "--auto-iam-authn"]
+        securityContext:
+          runAsNonRoot: true
+        # Required for Cloud SQL Proxy to connect to the database
+        # You might need to create a service account and bind it to the pod
+        # For simplicity, this example assumes default service account has permissions
+EOF
+
+# Create Kubernetes Service manifest
+cat <<EOF > k8s/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-cart-web-app
+  labels:
+    app: shopping-cart-web-app
+spec:
+  selector:
+    app: shopping-cart-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+EOF
+
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+
+echo_green "\nGKE deployment complete!"
+echo_green "It may take a few minutes for the LoadBalancer IP to be available."
+echo_green "To get the external IP, run: kubectl get service shopping-cart-web-app"

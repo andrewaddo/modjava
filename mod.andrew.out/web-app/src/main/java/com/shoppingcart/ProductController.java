@@ -21,6 +21,12 @@ public class ProductController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @GetMapping("/")
+    public String viewHomePage(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "index"; // Assuming 'index.html' or 'index.jsp' is the main products page
+    }
+
     @GetMapping("/admin/products")
     public String listProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());

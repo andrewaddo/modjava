@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart-web-app
+  labels:
+    app: shopping-cart-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-cart-web-app
+  template:
+    metadata:
+      labels:
+        app: shopping-cart-web-app
+    spec:
+      serviceAccountName: shopping-cart-ksa
+      containers:
+      - name: shopping-cart-web-app
+        image: gcr.io/addo-argolis-demo/web-app:0.0.1-SNAPSHOT
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql:///shop18cart?cloudSqlInstance=addo-argolis-demo:asia-southeast1:shopping-cart-db&socketFactory=com.google.cloud.sql.postgres.SocketFactory"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "testuser"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "shop18cart"
+      # Cloud SQL Proxy sidecar
+      - name: cloudsql-proxy
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+        args: ["addo-argolis-demo:asia-southeast1:shopping-cart-db", "--auto-iam-authn"]
+        securityContext:
+          runAsNonRoot: true
+        # Required for Cloud SQL Proxy to connect to the database
+        # You might need to create a service account and bind it to the pod
+        # For simplicity, this example assumes default service account has permissions
