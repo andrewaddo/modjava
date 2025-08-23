@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import jakarta.mail.MessagingException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +22,9 @@ class UserServiceImplTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -34,6 +39,7 @@ class UserServiceImplTest {
         User user = new User();
         user.setEmail("test@test.com");
         user.setPassword("password");
+        user.setName("Test User"); // Added for email service
 
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.save(user)).thenReturn(user);
@@ -42,6 +48,11 @@ class UserServiceImplTest {
 
         assertEquals("encodedPassword", registeredUser.getPassword());
         verify(userRepository, times(1)).save(user);
+        try {
+            verify(emailService, times(1)).sendRegistrationSuccessEmail(user.getEmail(), user.getName());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

@@ -68,4 +68,13 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public double getTotalAmount() {
+        return items.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        // This setter is added to allow Mockito to set the total amount during testing
+        // In a real scenario, the total amount would be calculated based on order items
+    }
 }

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -14,11 +16,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        try {
+            emailService.sendRegistrationSuccessEmail(savedUser.getEmail(), savedUser.getName());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return savedUser;
     }
 
     @Override
