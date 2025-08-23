@@ -80,4 +80,15 @@ public class ProductController {
         model.addAttribute("products", productService.getAllProducts());
         return "admin/stock";
     }
+
+    @GetMapping("/product-details/{id}")
+    public String showProductDetails(@PathVariable("id") String id, Model model) {
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            // Handle product not found, e.g., return a 404 page or redirect
+            return "error/404"; // Assuming you have a 404 error page
+        }
+        model.addAttribute("product", product);
+        return "product-details";
+    }
 }

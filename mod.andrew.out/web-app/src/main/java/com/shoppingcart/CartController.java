@@ -20,28 +20,40 @@ public class CartController {
     private UserRepository userRepository;
 
     @GetMapping("/cart")
-    public String showCart(Model model, @AuthenticationPrincipal(expression = "username") String username) {
+    public String showCart(Model model, @AuthenticationPrincipal String username) {
+        if (username == null) {
+            return "redirect:/login";
+        }
         User user = userRepository.findById(username).orElse(null);
         model.addAttribute("cart", cartService.getCart(user));
         return "cart";
     }
 
     @PostMapping("/cart/add/{productId}")
-    public String addToCart(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity, @AuthenticationPrincipal(expression = "username") String username) {
+    public String addToCart(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity, @AuthenticationPrincipal String username) {
+        if (username == null) {
+            return "redirect:/login"; // Redirect to login page if user is not authenticated
+        }
         User user = userRepository.findById(username).orElse(null);
         cartService.addProductToCart(user, productId, quantity);
         return "redirect:/cart";
     }
 
     @GetMapping("/cart/remove/{productId}")
-    public String removeFromCart(@PathVariable("productId") String productId, @AuthenticationPrincipal(expression = "username") String username) {
+    public String removeFromCart(@PathVariable("productId") String productId, @AuthenticationPrincipal String username) {
+        if (username == null) {
+            return "redirect:/login";
+        }
         User user = userRepository.findById(username).orElse(null);
         cartService.removeProductFromCart(user, productId);
         return "redirect:/cart";
     }
 
     @PostMapping("/cart/update/{productId}")
-    public String updateCart(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity, @AuthenticationPrincipal(expression = "username") String username) {
+    public String updateCart(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity, @AuthenticationPrincipal String username) {
+        if (username == null) {
+            return "redirect:/login";
+        }
         User user = userRepository.findById(username).orElse(null);
         cartService.updateProductQuantity(user, productId, quantity);
         return "redirect:/cart";

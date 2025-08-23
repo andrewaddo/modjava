@@ -62,6 +62,34 @@ step back, scan the code in mod.andrew.out, there are few warnings and errors in
 /p
 no, category_id is not even in the log!!! I checked and there is no tables in the shoppingcart database. Did you implement the   │
 │    schema.sql and data.sql to this database ?  
+/p
+no, you already completed the migration. Now it is testing phase. Run a local test. try the approach to run the app in the      │
+│   background, output the logs to a file so you can monitor. You can also conduct test      │                                      │
+│   │   with curl, identify error, and fix if any.   
+/p
+run the local test using the source, not the generated built jar file
+/p
+why the in schema.sql you renamed the column with "p" as prefix for all column names ? The original mysql_query.sql in the   │
+│    legacy app doesn't have this "p" prefix !
+/p
+sync the column names in schema.sql and data.sql with the legacy mysql_query.sql. When you are done, stop and wait.
+/p
+start the web-app locally on the background, output logs to app.log, and continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
+/p
+refer to the legacy styling in index.jsp, keep the div configuration the same, including the height, image style ="height: 150px; max-width: 180px", the product div section should have the same configuration style='height: 350px;'>
+/p
+refer to the legacy styling in index.jsp, keep the div configuration the same style='height: 350px;', also apply the css from <div                     │
+│   class="thumbnail"> for the image      
+/p
+> answer this, but dont start making changes. The legacy app has "Add to Cart" and "Buy Now" buttons for each product on the   │
+│    index page, why the new page has "View" and "Add to Cart" ?                                                                  │
+╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+✦ The new app's product page uses "View" and "Add to Cart" instead of "Buy Now" for a standard e-commerce UX. "View" leads to a detailed
+   product page for informed decisions, while "Add to Cart" supports flexible multi-item shopping. "Buy Now" is likely reserved for the
+  product details or checkout, avoiding clutter and promoting a guided purchasing workflow. I will explain this to the user.
+/p
+continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
 ```
 
 # Limitations
@@ -81,6 +109,8 @@ The most significant concern is the change in the orders table's primary key. Th
 1. In an IDE, e.g.e Eclipse, when there is a change to an element of the code e.g. rename id to pid, the changes will be cascaded to all other references. This is not the same behavior when the agent made a change, it did not cascade the changes to other places. This led to a very expensive regression changes process.
 1. The agent is definitely having limitation in managing cross-references between schema, data and java code when one change is required. For example, given the difficulty of migrating binary image data, we changed to use the URL to the image stored in GCS which is the better approach given the media can be cached. The agent couldn't identify all related places where the image is used to cascade the changes accordingly.
 1. For some reasons, the agent generated Category.java which was not there in the legacy code.
+1. The first few runs, the new app didn't route user to the login page upon adding the product to the cart. Obviously, the feature "redirect the user to the login page if the user is not yet logged in, when the user adds a product to the cart" was not there. The generated feature files should be reviewed carefully and specify fully before implementing.
+
 ```
                                        
 # Logs

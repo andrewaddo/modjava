@@ -15,6 +15,18 @@ import jakarta.validation.constraints.NotNull;
 @Table(name = "product")
 public class Product {
 
+    public Product() {
+    }
+
+    public Product(String pid, String image, String info, String name, double price, int quantity) {
+        this.pid = pid;
+        this.image = image;
+        this.info = info;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
     @Id
     @Column(name = "pid")
     private String pid;
@@ -26,10 +38,10 @@ public class Product {
     private String info;
     @NotNull
     @NumberFormat(style = NumberFormat.Style.NUMBER)
-    @Column(name = "price")
+        @Column(name = "price")
     private double price;
     @NotNull
-    @Column(name = "quantity")
+        @Column(name = "quantity")
     private int quantity;
     @Column(name = "image")
     private String image;
