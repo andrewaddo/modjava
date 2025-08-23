@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart-web-app
+  labels:
+    app: shopping-cart-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-cart-web-app
+  template:
+    metadata:
+      labels:
+        app: shopping-cart-web-app
+    spec:
+      containers:
+        - name: shopping-cart-web-app
+          image: shopping-cart-web-app:latest # This will be replaced with the actual image name
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://shopping-cart-db:5432/testdb
+            - name: SPRING_DATASOURCE_USERNAME
+              value: testuser
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: testpass
