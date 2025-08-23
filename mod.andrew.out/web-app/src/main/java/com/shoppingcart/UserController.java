@@ -25,6 +25,7 @@ public class UserController {
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             return "register";
         }
         userService.registerUser(user);

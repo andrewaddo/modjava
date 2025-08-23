@@ -7,11 +7,11 @@ public interface OrderService {
 
     Order createOrder(User user, List<CartItem> cartItems);
 
-    List<Order> getOrdersForUser(User user);
+    List<Order> getOrdersByUser(User user);
 
     Order getOrderById(String orderId);
 
-    void updateOrderStatus(String orderId, String status);
+    Order updateOrderStatus(String orderId, String status);
 
     List<Order> getAllOrders();
 }

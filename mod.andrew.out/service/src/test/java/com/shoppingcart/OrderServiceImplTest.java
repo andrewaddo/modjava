@@ -8,7 +8,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -53,6 +55,56 @@ class OrderServiceImplTest {
         assertEquals(user, order.getUser());
         assertEquals(1, order.getItems().size());
         assertEquals("PLACED", order.getStatus());
-        verify(orderItemRepository, times(1)).save(any(OrderItem.class));
+        verify(orderItemRepository, times(1)).saveAll(anyList());
+    }
+
+    @Test
+    void testGetOrderById() {
+        Order order = new Order();
+        order.setId("1");
+
+        when(orderRepository.findById("1")).thenReturn(Optional.of(order));
+
+        Order result = orderService.getOrderById("1");
+
+        assertNotNull(result);
+        assertEquals("1", result.getId());
+    }
+
+    @Test
+    void testGetOrdersByUser() {
+        User user = new User();
+        user.setEmail("test@test.com");
+
+        Order order1 = new Order();
+        order1.setId("1");
+        order1.setUser(user);
+
+        Order order2 = new Order();
+        order2.setId("2");
+        order2.setUser(user);
+
+        when(orderRepository.findByUser(user)).thenReturn(Arrays.asList(order1, order2));
+
+        List<Order> orders = orderService.getOrdersByUser(user);
+
+        assertEquals(2, orders.size());
+        verify(orderRepository, times(1)).findByUser(user);
+    }
+
+    @Test
+    void testUpdateOrderStatus() {
+        Order order = new Order();
+        order.setId("1");
+        order.setStatus("PLACED");
+
+        when(orderRepository.findById("1")).thenReturn(Optional.of(order));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        Order updatedOrder = orderService.updateOrderStatus("1", "SHIPPED");
+
+        assertNotNull(updatedOrder);
+        assertEquals("SHIPPED", updatedOrder.getStatus());
+        verify(orderRepository, times(1)).save(order);
     }
 }

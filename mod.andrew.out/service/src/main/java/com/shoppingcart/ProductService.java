@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product addProduct(String name, String type, String info, double price, int quantity, InputStream image);
+    Product addProduct(Product product, InputStream image);
 
     Product updateProduct(String id, Product product);
 

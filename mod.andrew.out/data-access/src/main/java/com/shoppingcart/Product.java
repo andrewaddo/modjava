@@ -7,20 +7,30 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import org.springframework.format.annotation.NumberFormat;
+
+import jakarta.validation.constraints.NotNull;
+
 @Entity
 @Table(name = "products")
 public class Product {
 
     @Id
     private String id;
+    @NotNull
     private String name;
+    @NotNull
     private String info;
+    @NotNull
+    @NumberFormat(style = NumberFormat.Style.NUMBER)
     private double price;
+    @NotNull
     private int quantity;
     private String image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @NotNull
     private Category category;
 
     public String getId() {

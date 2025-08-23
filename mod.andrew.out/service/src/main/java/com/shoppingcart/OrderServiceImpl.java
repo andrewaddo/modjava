@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersForUser(User user) {
+    public List<Order> getOrdersByUser(User user) {
         return orderRepository.findByUser(user);
     }
 
@@ -56,12 +56,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(String orderId, String status) {
+    public Order updateOrderStatus(String orderId, String status) {
         Order order = getOrderById(orderId);
         if (order != null) {
             order.setStatus(status);
-            orderRepository.save(order);
+            return orderRepository.save(order);
         }
+        return null;
     }
 
     @Override

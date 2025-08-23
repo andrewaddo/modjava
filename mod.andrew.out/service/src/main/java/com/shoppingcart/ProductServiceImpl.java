@@ -1,6 +1,8 @@
 
 package com.shoppingcart;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +19,9 @@ public class ProductServiceImpl implements ProductService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public Product addProduct(String name, String type, String info, double price, int quantity, InputStream image) {
+    public Product addProduct(Product product, InputStream image) {
         // For now, we are not handling the image
-        Category category = categoryRepository.findById(type).orElseGet(() -> {
-            Category newCategory = new Category();
-            newCategory.setId(type);
-            newCategory.setName(type);
-            return categoryRepository.save(newCategory);
-        });
-
-        Product product = new Product();
-        product.setName(name);
-        product.setCategory(category);
-        product.setInfo(info);
-        product.setPrice(price);
-        product.setQuantity(quantity);
-
+        product.setId(UUID.randomUUID().toString());
         return productRepository.save(product);
     }
 

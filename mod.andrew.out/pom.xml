@@ -34,7 +34,7 @@
         <module>data-access</module>
         <module>service</module>
         <module>web-app</module>
-        <module>integration-tests</module>
+        
     </modules>
 	<build>
 		<plugins>

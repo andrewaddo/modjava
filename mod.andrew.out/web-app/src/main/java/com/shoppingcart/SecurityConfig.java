@@ -1,6 +1,7 @@
 
 package com.shoppingcart;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -25,6 +29,7 @@ public class SecurityConfig {
             .formLogin(formLogin ->
                 formLogin
                     .loginPage("/login")
+                    .successHandler(customAuthenticationSuccessHandler)
                     .permitAll()
             )
             .logout(logout ->
@@ -41,10 +46,11 @@ public class SecurityConfig {
             if (user == null) {
                 throw new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found");
             }
+            System.out.println("User: " + user.getEmail() + ", Role: " + user.getRole());
             return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                .roles("USER")
+                .roles(user.getRole())
                 .build();
         };
     }

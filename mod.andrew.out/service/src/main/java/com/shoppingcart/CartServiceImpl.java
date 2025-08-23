@@ -19,7 +19,7 @@ public class CartServiceImpl implements CartService {
     private ProductRepository productRepository;
 
     @Override
-    public Cart getCartForUser(User user) {
+    public Cart getCart(User user) {
         Cart cart = cartRepository.findByUser(user);
         if (cart == null) {
             cart = new Cart();
@@ -32,42 +32,53 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void addProductToCart(User user, String productId, int quantity) {
-        Cart cart = getCartForUser(user);
+        Cart cart = getCart(user);
         Product product = productRepository.findById(productId).orElse(null);
 
         if (product != null) {
-            CartItem cartItem = new CartItem();
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
+            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
+            if (cartItem == null) {
+                cartItem = new CartItem();
+                cartItem.setCart(cart);
+                cartItem.setProduct(product);
+                cartItem.setQuantity(quantity);
+            } else {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            }
             cartItemRepository.save(cartItem);
         }
     }
 
     @Override
     public void removeProductFromCart(User user, String productId) {
-        Cart cart = getCartForUser(user);
+        Cart cart = getCart(user);
         Product product = productRepository.findById(productId).orElse(null);
 
         if (product != null) {
-            cart.getItems().removeIf(item -> item.getProduct().equals(product));
-            cartRepository.save(cart);
+            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
+            if (cartItem != null) {
+                cartItemRepository.delete(cartItem);
+            }
         }
     }
 
     @Override
-    public void updateProductQuantityInCart(User user, String productId, int quantity) {
-        Cart cart = getCartForUser(user);
+    public void updateProductQuantity(User user, String productId, int quantity) {
+        Cart cart = getCart(user);
         Product product = productRepository.findById(productId).orElse(null);
 
         if (product != null) {
-            for (CartItem item : cart.getItems()) {
-                if (item.getProduct().equals(product)) {
-                    item.setQuantity(quantity);
-                    cartItemRepository.save(item);
-                    break;
-                }
+            CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
+            if (cartItem != null) {
+                cartItem.setQuantity(quantity);
+                cartItemRepository.save(cartItem);
             }
         }
+    }
+
+    @Override
+    public void clearCart(User user) {
+        Cart cart = getCart(user);
+        cartItemRepository.deleteByCart(cart);
     }
 }

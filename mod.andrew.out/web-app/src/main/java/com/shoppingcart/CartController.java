@@ -22,7 +22,7 @@ public class CartController {
     @GetMapping("/cart")
     public String showCart(Model model, @AuthenticationPrincipal(expression = "username") String username) {
         User user = userRepository.findById(username).orElse(null);
-        model.addAttribute("cart", cartService.getCartForUser(user));
+        model.addAttribute("cart", cartService.getCart(user));
         return "cart";
     }
 
@@ -43,7 +43,7 @@ public class CartController {
     @PostMapping("/cart/update/{productId}")
     public String updateCart(@PathVariable("productId") String productId, @RequestParam("quantity") int quantity, @AuthenticationPrincipal(expression = "username") String username) {
         User user = userRepository.findById(username).orElse(null);
-        cartService.updateProductQuantityInCart(user, productId, quantity);
+        cartService.updateProductQuantity(user, productId, quantity);
         return "redirect:/cart";
     }
 }

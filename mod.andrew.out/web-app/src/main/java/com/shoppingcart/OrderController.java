@@ -24,17 +24,17 @@ public class OrderController {
     @GetMapping("/orders")
     public String showOrders(Model model, @AuthenticationPrincipal(expression = "username") String username) {
         User user = userRepository.findById(username).orElse(null);
-        model.addAttribute("orders", orderService.getOrdersForUser(user));
+        model.addAttribute("orders", orderService.getOrdersByUser(user));
         return "orders";
     }
 
     @PostMapping("/orders/create")
     public String createOrder(@AuthenticationPrincipal(expression = "username") String username) {
         User user = userRepository.findById(username).orElse(null);
-        Cart cart = cartService.getCartForUser(user);
+        Cart cart = cartService.getCart(user);
         orderService.createOrder(user, cart.getItems());
         cart.getItems().clear();
-        cartService.getCartForUser(user); // to update the cart
+        cartService.getCart(user); // to update the cart
         return "redirect:/orders";
     }
 
