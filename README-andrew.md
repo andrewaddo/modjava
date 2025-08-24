@@ -158,6 +158,9 @@ first thing first, the product card white box is now working with              �
 ok, that's better. Now, align the make the "View" link a button with the same    │
 │    look and feel like "Add to Cart" button. Align them on the same line with the    │
 │    pricing details. Fix the pricing placement as it is too close to the box border.
+/p
+clearly I don't want to have email password commited to github, how should I go │
+│     about fixing that failed test ? 
 ```
 
 # Limitations
