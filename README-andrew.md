@@ -129,7 +129,18 @@ can you check the profile page, I had error going to /profile
 │    Center" and the home icon is not the same with /checkout or /profile
 /p
 the /orders page is not working
-```
+/p
+the page /cart is not styled, it does not have any css like the other pages
+/p
+the page /login is not styled, it does not have any css like the other pages
+/p
+there are links to /products page which is not working
+/p
+ hm, the styling for the landing page is still not the same with /cart page     │
+│    which I like. Please rework the dropdown menu link in the landing page to be   │
+│    consistent with the other pages such as /cart  
+/p
+the /orders page menu is not consitent with other pages
 
 # Limitations
 
