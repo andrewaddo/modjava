@@ -121,6 +121,14 @@ you just finished the code migration. Now it's the testing phase. Roger ?
 run the test locally, with the code not the built jar, check and kill if the previous process is still running on port 8081, output the logs to mod.andrew.out/web-app/app.log, and clean up app.log for each run, continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
 p/
 can you check the profile page, I had error going to /profile 
+/p
+ I like the layout in /checkout or /profile, specifically on the menu. Can you   │
+│    make the landing index page looks consistent like that ?      
+/p
+ hm, the index page still have a different look and feel. The "Shopping   │
+│    Center" and the home icon is not the same with /checkout or /profile
+/p
+the /orders page is not working
 ```
 
 # Limitations

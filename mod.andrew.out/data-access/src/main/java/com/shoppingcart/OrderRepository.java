@@ -1,11 +1,8 @@
-
 package com.shoppingcart;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List; // Import List
 
-import java.util.List;
-
-public interface OrderRepository extends JpaRepository<Order, String> {
-
-    List<Order> findByUser(User user);
+public interface OrderRepository extends JpaRepository<Order, OrderPK> {
+    List<Order> findByOrderid(String orderid);
 }

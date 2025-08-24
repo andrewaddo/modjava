@@ -1,41 +1,46 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Order Details</title>
+    <title>Transaction Details</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
     <div class="container">
-        <h1 class="mt-5">Order Details</h1>
+        <h1 class="mt-5">Transaction Details</h1>
         <div class="card">
             <div class="card-header">
-                Order ID: <span th:text="${order.id}"></span>
+                Transaction ID: <span th:text="${transaction.transid}"></span>
             </div>
             <div class="card-body">
-                <p><strong>Date:</strong> <span th:text="${order.orderDate}"></span></p>
-                <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${transaction.time}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${transaction.status}"></span></p>
+                <p><strong>Total Amount:</strong> <span th:text="${#numbers.formatDecimal(transaction.amount, 0, 2)}"></span></p>
+                
+                <h3>Order Items:</h3>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Product</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Total</th>
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="item : ${order.items}">
-                            <td th:text="${item.product.name}"></td>
-                            <td th:text="${item.price}"></td>
-                            <td th:text="${item.quantity}"></td>
-                            <td th:text="${item.price * item.quantity}"></td>
+                        <tr th:each="orderItem : ${transaction.orders}">
+                            <td th:text="${orderItem.product.name}"></td>
+                            <td th:text="${orderItem.amount / orderItem.quantity}"></td>
+                            <td th:text="${orderItem.quantity}"></td>
+                            <td th:text="${orderItem.amount}"></td>
                         </tr>
                     </tbody>
                 </table>
-                <h3 class="text-right">Total: <span th:text="${order.items.stream().mapToDouble(item -> item.price * item.quantity).sum()}"></span></h3>
             </div>
         </div>
     </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

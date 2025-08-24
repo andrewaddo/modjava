@@ -1,17 +1,10 @@
-
 package com.shoppingcart;
 
 import java.util.List;
 
 public interface OrderService {
-
-    Order createOrder(User user, List<UserCartItem> userCartItems);
-
-    List<Order> getOrdersByUser(User user);
-
-    Order getOrderById(String orderId);
-
-    Order updateOrderStatus(String orderId, String status);
-
-    List<Order> getAllOrders();
+    Order getOrderById(OrderPK id);
+    List<Order> getOrdersByTransactionId(String transactionId);
+    Order updateOrderStatus(OrderPK id, int status);
+    List<Order> getAllOrders(); // For admin
 }

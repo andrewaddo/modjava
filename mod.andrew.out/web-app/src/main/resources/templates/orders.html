@@ -1,35 +1,38 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Orders</title>
+    <title>My Transactions</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
     <div class="container">
-        <h1 class="mt-5">My Orders</h1>
+        <h1 class="mt-5">My Transactions</h1>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
+                    <th>Transaction ID</th>
                     <th>Date</th>
                     <th>Status</th>
-                    <th>Total</th>
+                    <th>Amount</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="order : ${orders}">
-                    <td th:text="${order.id}"></td>
-                    <td th:text="${order.orderDate}"></td>
-                    <td th:text="${order.status}"></td>
-                    <td th:text="${#aggregates.sum(order.items.![price * quantity])}"></td>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.transid}"></td>
+                    <td th:text="${transaction.time}"></td>
+                    <td th:text="${transaction.status}"></td>
+                    <td th:text="${#numbers.formatDecimal(transaction.amount, 0, 2)}"></td>
                     <td>
-                        <a th:href="@{/orders/{orderId}(orderId=${order.id})}" class="btn btn-sm btn-info">View</a>
+                        <a th:href="@{/orders/{transactionId}(transactionId=${transaction.transid})}" class="btn btn-sm btn-info">View Details</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

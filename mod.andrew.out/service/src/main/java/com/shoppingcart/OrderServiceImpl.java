@@ -1,15 +1,10 @@
-
 package com.shoppingcart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -17,54 +12,21 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    @Override
+    public Order getOrderById(OrderPK id) {
+        return orderRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Order> getOrdersByTransactionId(String transactionId) {
+        // Assuming OrderRepository has a method like findByOrderid (which is the transactionId)
+        return orderRepository.findByOrderid(transactionId);
+    }
 
     @Override
     @Transactional
-    public Order createOrder(User user, List<UserCartItem> userCartItems) {
-        Order order = new Order();
-        order.setId(UUID.randomUUID().toString());
-        order.setUser(user);
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus("PLACED");
-
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (UserCartItem userCartItem : userCartItems) { // Iterate over UserCartItem
-            OrderItem orderItem = new OrderItem();
-            orderItem.setId(UUID.randomUUID().toString());
-            orderItem.setOrder(order);
-            
-            // Fetch product using prodid from UserCartItem
-            Product product = productRepository.findById(userCartItem.getProdid()).orElse(null);
-            if (product != null) {
-                orderItem.setProduct(product);
-                orderItem.setQuantity(userCartItem.getQuantity());
-                orderItem.setPrice(product.getPrice()); // Use product's price
-                orderItems.add(orderItem);
-            }
-        }
-
-        order.setItems(orderItems);
-
-        orderRepository.save(order);
-
-        return order;
-    }
-
-    @Override
-    public List<Order> getOrdersByUser(User user) {
-        return orderRepository.findByUser(user);
-    }
-
-    @Override
-    public Order getOrderById(String orderId) {
-        return orderRepository.findById(orderId).orElse(null);
-    }
-
-    @Override
-    public Order updateOrderStatus(String orderId, String status) {
-        Order order = getOrderById(orderId);
+    public Order updateOrderStatus(OrderPK id, int status) {
+        Order order = getOrderById(id);
         if (order != null) {
             order.setStatus(status);
             return orderRepository.save(order);

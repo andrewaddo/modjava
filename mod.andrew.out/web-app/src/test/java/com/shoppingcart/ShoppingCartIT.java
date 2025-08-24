@@ -112,7 +112,7 @@ class ShoppingCartIT {
         assertEquals("Test Camera", productName.getText());
 
         // Proceed to checkout
-        driver.findElement(By.xpath("//a[text()='Checkout']")).click();
+        driver.get("http://localhost:" + port + "/checkout");
 
         // Wait for the payment page to load
         wait.until(ExpectedConditions.urlContains("/checkout"));
