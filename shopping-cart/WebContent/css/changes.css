@@ -18,6 +18,11 @@
     justify-content: space-between; /* Align buttons and price horizontally */
     align-items: center; /* Vertically align items */
     width: 100%; /* Ensure it takes full width */
+    padding: 0 15px; /* Add some horizontal padding to move elements away from border */
+}
+
+.product-price {
+    margin-left: 10px; /* Add margin to separate price from buttons */
 }
 
 .text-center {
