@@ -119,7 +119,8 @@ it's pointless (or hopeless) to expect the agent to be able to get it right the 
 /p
 you just finished the code migration. Now it's the testing phase. Roger ?
 run the test locally, with the code not the built jar, check and kill if the previous process is still running on port 8081, output the logs to mod.andrew.out/web-app/app.log, and clean up app.log for each run, continue monitor the app.log for errors. If there is error, stop the web-app process, fix the error, then repeat.
-
+p/
+can you check the profile page, I had error going to /profile 
 ```
 
 # Limitations
