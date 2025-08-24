@@ -10,9 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**")
-                .addResourceLocations("file:./shopping-cart/WebContent/css/");
+                .addResourceLocations("file:/home/ducdo/workspace/modjava/shopping-cart/WebContent/css/");
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:./shopping-cart/WebContent/images/");
+                .addResourceLocations("file:/home/ducdo/workspace/modjava/shopping-cart/WebContent/images/");
         // Add other static resource locations if needed
     }
 }
