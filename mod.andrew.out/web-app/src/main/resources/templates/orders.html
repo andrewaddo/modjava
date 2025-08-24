@@ -23,7 +23,7 @@
                     <td th:text="${order.id}"></td>
                     <td th:text="${order.orderDate}"></td>
                     <td th:text="${order.status}"></td>
-                    <td th:text="${order.items.stream().mapToDouble(item -> item.price * item.quantity).sum()}"></td>
+                    <td th:text="${#aggregates.sum(order.items.![price * quantity])}"></td>
                     <td>
                         <a th:href="@{/orders/{orderId}(orderId=${order.id})}" class="btn btn-sm btn-info">View</a>
                     </td>

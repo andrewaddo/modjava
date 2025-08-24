@@ -25,13 +25,13 @@
                     <td th:text="${item.quantity}"></td>
                     <td th:text="${item.product.price * item.quantity}"></td>
                     <td>
-                        <a th:href="@{/cart/remove/{productId}(productId=${item.product.id})}" class="btn btn-sm btn-danger">Remove</a>
+                        <a th:href="@{/cart/remove/{productId}(productId=${item.product.pid})}" class="btn btn-sm btn-danger">Remove</a>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div class="text-right">
-            <h3>Total: <span th:text="${cartItems.stream().mapToDouble(item -> item.quantity * item.product.price).sum()}"></span></h3>
+            <h3>Total: <span th:text="${#aggregates.sum(cartItems.![quantity * product.price])}"></span></h3>
             <a href="/checkout" class="btn btn-primary">Checkout</a>
         </div>
     </div>

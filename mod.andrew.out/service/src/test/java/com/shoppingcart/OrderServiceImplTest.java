@@ -20,8 +20,7 @@ class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
-    @Mock
-    private OrderItemRepository orderItemRepository;
+    
 
     @Mock
     private ProductRepository productRepository; // Added mock for ProductRepository
@@ -56,7 +55,7 @@ class OrderServiceImplTest {
         assertNotNull(order);
         assertEquals(1, order.getItems().size());
         assertEquals("PLACED", order.getStatus());
-        verify(orderItemRepository, times(1)).saveAll(anyList());
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test

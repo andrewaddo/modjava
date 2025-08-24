@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -16,13 +18,11 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderItemRepository orderItemRepository; // Keep this for now, will investigate later
-
-    @Autowired
-    private ProductRepository productRepository; // Autowire ProductRepository to fetch product details
+    private ProductRepository productRepository;
 
     @Override
-    public Order createOrder(User user, List<UserCartItem> userCartItems) { // Changed parameter type
+    @Transactional
+    public Order createOrder(User user, List<UserCartItem> userCartItems) {
         Order order = new Order();
         order.setId(UUID.randomUUID().toString());
         order.setUser(user);
@@ -48,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         order.setItems(orderItems);
 
         orderRepository.save(order);
-        orderItemRepository.saveAll(orderItems);
 
         return order;
     }

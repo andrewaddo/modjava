@@ -176,4 +176,7 @@ gsutil iam ch serviceAccount:p827859227929-dtoer1@gcp-sa-cloud-sql.iam.gservicea
 
 psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/schema.sql
 psql -U postgres -d shoppingcart -f mod.andrew.out/web-app/src/main/resources/data.sql
+
+Facing Gemini CLI ratelimit issue
+https://github.com/google-gemini/gemini-cli/issues/1502
 ```

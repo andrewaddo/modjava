@@ -11,11 +11,11 @@ Stores information about the products available in the store.
 | Column      | Type          | Description                                   |
 |-------------|---------------|-----------------------------------------------|
 | `pid`       | VARCHAR(45)   | The unique identifier for the product.        |
-| `pname`     | VARCHAR(100)  | The name of the product.                      |
-| `ptype`     | VARCHAR(20)   | The type or category of the product.          |
-| `pinfo`     | VARCHAR(350)  | A description of the product.                 |
-| `pprice`    | DECIMAL(12,2) | The price of the product.                     |
-| `pquantity` | INT           | The quantity of the product in stock.         |
+| `name`     | VARCHAR(100)  | The name of the product.                      |
+| `type`     | VARCHAR(20)   | The type or category of the product.          |
+| `info`     | VARCHAR(350)  | A description of the product.                 |
+| `price`    | DECIMAL(12,2) | The price of the product.                     |
+| `quantity` | INT           | The quantity of the product in stock.         |
 | `image`     | LONGBLOB      | The product image.                            |
 
 ### `orders`
@@ -42,6 +42,7 @@ Stores information about registered users.
 | `address` | VARCHAR(250)  | The user's shipping address.            |
 | `pincode` | INT           | The user's postal code.                 |
 | `password`| VARCHAR(20)   | The user's password.                    |
+| `role`    | VARCHAR(20)   | The user's role.                        |
 
 ### `transactions`
 
