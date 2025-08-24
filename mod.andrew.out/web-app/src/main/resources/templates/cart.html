@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -8,31 +7,36 @@
 <body>
     <div class="container">
         <h1 class="mt-5">Shopping Cart</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="item : ${cartItems}">
-                    <td th:text="${item.product.name}"></td>
-                    <td th:text="${item.product.price}"></td>
-                    <td th:text="${item.quantity}"></td>
-                    <td th:text="${item.product.price * item.quantity}"></td>
-                    <td>
-                        <a th:href="@{/cart/remove/{productId}(productId=${item.product.pid})}" class="btn btn-sm btn-danger">Remove</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="text-right">
-            <h3>Total: <span th:text="${#aggregates.sum(cartItems.![quantity * product.price])}"></span></h3>
-            <a href="/checkout" class="btn btn-primary">Checkout</a>
+        <div th:if="${#lists.isEmpty(cartItems)}">
+            <h3 class="text-center">Your cart is empty!</h3>
+        </div>
+        <div th:unless="${#lists.isEmpty(cartItems)}">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${cartItems}">
+                        <td th:text="${item.product.name}"></td>
+                        <td th:text="${item.product.price}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.product.price * item.quantity}"></td>
+                        <td>
+                            <a th:href="@{/cart/remove/{productId}(productId=${item.product.pid})}" class="btn btn-sm btn-danger">Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-right">
+                <h3>Total: <span th:text="${#aggregates.sum(cartItems.![quantity * product.price])}"></span></h3>
+                <a href="/checkout" class="btn btn-primary">Checkout</a>
+            </div>
         </div>
     </div>
 </body>

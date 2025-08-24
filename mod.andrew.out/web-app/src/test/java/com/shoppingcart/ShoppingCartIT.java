@@ -115,7 +115,7 @@ class ShoppingCartIT {
         driver.findElement(By.xpath("//a[text()='Checkout']")).click();
 
         // On payment page, click "Pay Now"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Pay Now']"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Pay :Rs')]"))).click();
 
         // Verify order is placed and cart is empty
         wait.until(ExpectedConditions.urlContains("/orders"));
