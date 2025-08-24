@@ -1,6 +1,5 @@
-
 .product-card-custom {
-    background-color: white; /* White background */
+    background-color: white !important; /* White background */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Distribute space vertically */
