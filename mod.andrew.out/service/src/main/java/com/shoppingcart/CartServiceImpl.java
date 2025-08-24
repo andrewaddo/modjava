@@ -3,6 +3,7 @@ package com.shoppingcart;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List; // Changed import from ArrayList to List
 import java.util.Optional; // Added import
@@ -19,6 +20,7 @@ public class CartServiceImpl implements CartService {
     // Removed getCart method
 
     @Override
+    @Transactional
     public void addProductToCart(User user, String productId, int quantity) {
         UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
         Optional<UserCartItem> existingItem = userCartItemRepository.findById(id);
@@ -34,12 +36,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void removeProductFromCart(User user, String productId) {
         UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
         userCartItemRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public void updateProductQuantity(User user, String productId, int quantity) {
         UserCartItemPK id = new UserCartItemPK(user.getEmail(), productId); // Use UserCartItemPK
         Optional<UserCartItem> existingItem = userCartItemRepository.findById(id);
@@ -52,6 +56,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public void clearCart(User user) {
         List<UserCartItem> userCartItems = userCartItemRepository.findByUsername(user.getEmail());
         userCartItemRepository.deleteAll(userCartItems);

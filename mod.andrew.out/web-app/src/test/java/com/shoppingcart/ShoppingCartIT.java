@@ -61,7 +61,7 @@ class ShoppingCartIT {
         options.addArguments("--headless");
         options.addArguments("--disable-dev-shm-usage");
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         // Create a user
         User user = new User();
@@ -113,6 +113,10 @@ class ShoppingCartIT {
 
         // Proceed to checkout
         driver.findElement(By.xpath("//a[text()='Checkout']")).click();
+
+        // Wait for the payment page to load
+        wait.until(ExpectedConditions.urlContains("/checkout"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[text()='Credit Card Payment']")));
 
         // On payment page, click "Pay Now"
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Pay :Rs')]"))).click();

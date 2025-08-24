@@ -42,6 +42,7 @@ public class CartController {
             return "redirect:/login"; // Redirect to login if user not found in DB
         }
         List<UserCartItem> cartItems = cartService.getAllCartItems(user); // Changed to getAllCartItems
+        logger.info("CartController: Number of items in cart for user {}: {}", username, cartItems.size()); // New log
         model.addAttribute("cartItems", cartItems); // Changed attribute name
         return "cart";
     }

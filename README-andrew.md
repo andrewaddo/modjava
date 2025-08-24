@@ -1,3 +1,7 @@
+# Milestone
+
+Aug 24 2pm: cart works
+
 # Prompts
 
 ```logs
@@ -167,6 +171,10 @@ sudo systemctl disable postgresql
 sudo systemctl status postgresql
 
 mvn -f mod.andrew.out/pom.xml clean install
+
+sudo lsof -i :8081
+sudo netstat -tulnp | grep 8081
+ kill -9 <PID>
 
 mvn -f mod.andrew.out/web-app/pom.xml spring-boot:run &
 
