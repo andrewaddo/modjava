@@ -2,16 +2,22 @@
     background-color: white !important; /* White background */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribute space vertically */
+    /* justify-content: space-between; */ /* Distribute space vertically */
     margin-bottom: 20px; /* Add vertical gap between products */
 }
 
 .product-card-custom .card-body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribute space vertically within card body */
+    /* justify-content: space-between; */ /* Distribute space vertically within card body */
     height: 100%; /* Ensure card body takes full height */
+    /* align-items: center; /* Vertically align items */
+    text-align: center; 
 }
+
+/* .product-card-custom .card-text {
+    text-align: center;
+} */
 
 .product-card-custom .product-actions {
     display: flex;

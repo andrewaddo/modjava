@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Shopping Center</title>
     <meta charset="utf-8">
@@ -9,6 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
+
 <body style="background-color: #E6F9E6;">
     <div th:replace="~{fragments/header :: header}"></div>
 
@@ -16,19 +18,21 @@
         <div class="row">
             <div class="col-md-4" th:each="product : ${products}">
                 <div class="card mb-4 shadow-sm product-card-custom" style="height: 350px;">
-                    <img th:src="${product.image}" class="card-img-top" alt="Product Image" style="height: 150px; max-width: 180px; width: auto; margin: 0 auto; display: block;">
+                    <img th:src="${product.image}" class="card-img-top" alt="Product Image"
+                        style="height: 200px; width: auto; margin: 0 auto; display: block;">
                     <div class="card-body">
-                        <h5 class="card-title text-center" th:text="${product.name}" style="font-size: small;">Product Name</h5>
-                        <p class="card-text text-center" th:text="${product.info}" style="font-size: small;">Product Description</p>
-                        <div class="product-actions">
+                        <h5 class="card-title" th:text="${product.name}" style="font-size: small;">Product Name</h5>
+                        <p class="card-text" th:text="${product.info}" style="font-size: small;">Product Description</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a th:href="@{'/product-details/' + ${product.pid}}"
+                                class="btn btn-sm btn-outline-secondary">View</a>
                             <div class="btn-group">
-                                <a th:href="@{'/product-details/' + ${product.pid}}" class="btn btn-sm btn-info">View</a>
                                 <form th:action="@{'/cart/add/' + ${product.pid}}" method="post">
-                                <input type="hidden" name="quantity" value="1" />
-                                <button type="submit" class="btn btn-sm btn-info">Add to Cart</button>
-                            </form>
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add to Cart</button>
+                                </form>
                             </div>
-                            <small class="text-muted product-price" th:text="${'
+                            <small class="text-muted" th:text="${'$' + product.price}">$999</small>
                         </div>
                     </div>
                 </div>
@@ -38,14 +42,3 @@
 
     <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
-</html> + product.price}">$999</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div th:replace="~{fragments/footer :: footer}"></div>
-</body>
-</html>

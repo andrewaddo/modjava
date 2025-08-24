@@ -141,6 +141,24 @@ there are links to /products page which is not working
 │    consistent with the other pages such as /cart  
 /p
 the /orders page menu is not consitent with other pages
+/p
+the styling for each product box in the landing page (or products page) was   │
+│    distorted with the previous version change. Don't change the verion, I like   │
+│    this verion. Just change the product box e.g. white background, align the     │
+│    view button, "add to cart" button and the price accordingly
+/p
+well changes.css is not found on the client browser
+/p
+first thing first, the product card white box is now working with              │
+│   changes.css is loaded. But there is no gap between the above and the           │
+│   below products. Please align the product text centrally. Also, the             │
+│   "View", "Add to Cart" buttons are not aligned. Please refer to the             │
+│   legacy app for reference styling. Or do it better yourself.
+/p
+ok, that's better. Now, align the make the "View" link a button with the same    │
+│    look and feel like "Add to Cart" button. Align them on the same line with the    │
+│    pricing details. Fix the pricing placement as it is too close to the box border.
+```
 
 # Limitations
 
