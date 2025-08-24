@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Distribute space vertically */
+    margin-bottom: 20px; /* Add vertical gap between products */
 }
 
 .product-card-custom .card-body {
@@ -12,9 +13,13 @@
     height: 100%; /* Ensure card body takes full height */
 }
 
-.product-card-custom .d-flex {
+.product-card-custom .product-actions {
     display: flex;
     justify-content: space-between; /* Align buttons and price horizontally */
     align-items: center; /* Vertically align items */
     width: 100%; /* Ensure it takes full width */
+}
+
+.text-center {
+    text-align: center;
 }
