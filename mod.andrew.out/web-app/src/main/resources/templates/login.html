@@ -1,12 +1,18 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/changes.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 </head>
-<body>
-    <div class="container">
+<body style="background-color: #E6F9E6;">
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="container" style="margin-top: 70px;">
         <h1 class="mt-5">Login</h1>
         <form th:action="@{/login}" method="post">
             <div class="form-group">
@@ -20,5 +26,7 @@
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
