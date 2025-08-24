@@ -31,6 +31,12 @@ public class ProductController {
         return "index"; // Assuming 'index.html' or 'index.jsp' is the main products page
     }
 
+    @GetMapping("/products")
+    public String viewProductsPage(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "index";
+    }
+
     @GetMapping("/admin/products")
     public String listProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
