@@ -15,7 +15,7 @@
     <div class="container" style="margin-top: 70px;">
         <div class="row">
             <div class="col-md-4" th:each="product : ${products}">
-                <div class="card mb-4 shadow-sm" style="height: 350px;">
+                <div class="card mb-4 shadow-sm product-card-custom" style="height: 350px;">
                     <img th:src="${product.image}" class="card-img-top" alt="Product Image" style="height: 150px; max-width: 180px; width: auto; margin: 0 auto; display: block;">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${product.name}" style="font-size: small;">Product Name</h5>
