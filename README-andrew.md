@@ -161,6 +161,21 @@ ok, that's better. Now, align the make the "View" link a button with the same   
 /p
 clearly I don't want to have email password commited to github, how should I go │
 │     about fixing that failed test ? 
+/p
+refactor the email testing code to avoid using sending the actual email
+/p
+Please redirect the user to the previous page the user was in before           │
+│   signing in. If there is no previous page, redirect them to the landing         │
+│   page.
+/p
+please update the password in data.sql to use BCrypt instead of plain text
+/p
+please update the password in data.sql to use BCrypt instead of the old        │
+│   plain text. The data.sql is in web-app/src/main/resources. There are 2         │
+│   records to add users to app_user, with the column password. Please keep        │
+│   the same password values, but encrypt it while saving to the database.
+/p
+mark that add product test as a technical debt, then run a test
 ```
 
 # Limitations
@@ -181,7 +196,7 @@ The most significant concern is the change in the orders table's primary key. Th
 1. The agent is definitely having limitation in managing cross-references between schema, data and java code when one change is required. For example, given the difficulty of migrating binary image data, we changed to use the URL to the image stored in GCS which is the better approach given the media can be cached. The agent couldn't identify all related places where the image is used to cascade the changes accordingly.
 1. For some reasons, the agent generated Category.java which was not there in the legacy code.
 1. The first few runs, the new app didn't route user to the login page upon adding the product to the cart. Obviously, the feature "redirect the user to the login page if the user is not yet logged in, when the user adds a product to the cart" was not there. The generated feature files should be reviewed carefully and specify fully before implementing.
-
+1. For cost optimisation, maybe it's a good strategy to avoid asking the agent to run test, check for errors and fix those, since the test logs can be huge. We can run the test separately, then copy/paste the error back to the agent. Once manual test past, ask the agent to run full test.
 ```
                                        
 # Logs
