@@ -9,11 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 import jakarta.validation.Valid;
 
 @Controller
 public class ProductController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;
@@ -39,7 +44,10 @@ public class ProductController {
 
     @GetMapping("/admin/products")
     public String listProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        List<Product> products = productService.getAllProducts();
+        logger.info("Number of products: {}", products.size());
+        products.forEach(product -> logger.info("Product: {}", product.getPid()));
+        model.addAttribute("products", products);
         return "admin/products";
     }
 
@@ -55,7 +63,7 @@ public class ProductController {
             bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             return "admin/add-product";
         }
-        
+        productService.addProduct(product, product.getImage());
         return "redirect:/admin/products";
     }
 

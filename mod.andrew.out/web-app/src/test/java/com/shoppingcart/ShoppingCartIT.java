@@ -17,6 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -27,8 +28,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.springframework.test.context.ActiveProfiles;
+
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ShoppingCartApplication.class)
+@ActiveProfiles("test")
 class ShoppingCartIT {
 
     @LocalServerPort
@@ -42,6 +46,9 @@ class ShoppingCartIT {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -66,7 +73,7 @@ class ShoppingCartIT {
         // Create a user
         User user = new User();
         user.setEmail("user@test.com");
-        user.setPassword("password");
+        user.setPassword(passwordEncoder.encode("password"));
         user.setName("Test User");
         user.setRole("USER");
         user.setAddress("123 Test St");
@@ -119,7 +126,7 @@ class ShoppingCartIT {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[text()='Credit Card Payment']")));
 
         // On payment page, click "Pay Now"
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Pay :Rs')]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']"))).click();
 
         // Verify order is placed and cart is empty
         wait.until(ExpectedConditions.urlContains("/orders"));

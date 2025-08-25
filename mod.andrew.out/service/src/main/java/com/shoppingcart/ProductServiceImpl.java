@@ -17,14 +17,14 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private MailService mailService; // Inject MailService
+    private EmailService emailService; // Inject EmailService
 
     @Autowired
     private DemandService demandService; // Inject DemandService
 
     @Override
-    public Product addProduct(Product product, InputStream image) {
-        // For now, we are not handling the image
+    public Product addProduct(Product product, String imageUrl) {
+        product.setImage(imageUrl);
         product.setPid(UUID.randomUUID().toString());
         return productRepository.save(product);
     }
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
                 List<Demand> demands = demandService.getDemandsByProdid(updatedProduct.getPid());
                 for (Demand demand : demands) {
                     try {
-                        mailService.sendProductAvailableEmail(demand.getUser().getEmail(), demand.getUser().getName(), updatedProduct.getName(), updatedProduct.getPid());
+                        emailService.sendProductAvailableEmail(demand.getUser().getEmail(), demand.getUser().getName(), updatedProduct.getName(), updatedProduct.getPid());
                     } catch (MessagingException e) {
                         e.printStackTrace(); // Log the exception
                     }
