@@ -26,6 +26,8 @@ public class Order {
     @Column(name = "shipped") // Map to 'shipped' column
     private int status; // 0 for not shipped, 1 for shipped
 
+    
+
     @ManyToOne
     @JoinColumn(name = "orderid", insertable = false, updatable = false)
     private Transaction transaction; // Many-to-one relationship with Transaction

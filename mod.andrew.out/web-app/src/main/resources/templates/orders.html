@@ -19,7 +19,6 @@
                 <tr>
                     <th>Transaction ID</th>
                     <th>Date</th>
-                    <th>Status</th>
                     <th>Amount</th>
                     <th>Actions</th>
                 </tr>
@@ -28,7 +27,6 @@
                 <tr th:each="transaction : ${transactions}">
                     <td th:text="${transaction.transid}"></td>
                     <td th:text="${transaction.time}"></td>
-                    <td th:text="${transaction.status}"></td>
                     <td th:text="${#numbers.formatDecimal(transaction.amount, 0, 2)}"></td>
                     <td>
                         <a th:href="@{/orders/{transactionId}(transactionId=${transaction.transid})}" class="btn btn-sm btn-info">View Details</a>

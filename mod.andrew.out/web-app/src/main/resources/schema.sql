@@ -16,16 +16,6 @@ CREATE TABLE product (
   PRIMARY KEY (pid)
 );
 
-CREATE TABLE orders (
-  orderid VARCHAR(45) NOT NULL,
-  prodid VARCHAR(45) NOT NULL,
-  quantity INTEGER NULL DEFAULT NULL,
-  amount DECIMAL(10,2) NULL DEFAULT NULL,
-  shipped INTEGER NOT NULL DEFAULT 0,
-  PRIMARY KEY (orderid),
-  CONSTRAINT productid FOREIGN KEY (prodid) REFERENCES product (pid)
-);
-
 CREATE TABLE app_user (
   email VARCHAR(60) NOT NULL,
   name VARCHAR(30) NULL DEFAULT NULL,
@@ -43,8 +33,18 @@ CREATE TABLE transactions (
   "time" TIMESTAMP NULL DEFAULT NULL,
   amount DECIMAL(10,2) NULL DEFAULT NULL,
   PRIMARY KEY (transid),
-  CONSTRAINT truserid FOREIGN KEY (username) REFERENCES "app_user" (email),
-  CONSTRAINT transorderid FOREIGN KEY (transid) REFERENCES orders (orderid)
+  CONSTRAINT truserid FOREIGN KEY (username) REFERENCES "app_user" (email)
+);
+
+CREATE TABLE orders (
+  orderid VARCHAR(45) NOT NULL,
+  prodid VARCHAR(45) NOT NULL,
+  quantity INTEGER NULL DEFAULT NULL,
+  amount DECIMAL(10,2) NULL DEFAULT NULL,
+  shipped INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (orderid, prodid),
+  CONSTRAINT productid FOREIGN KEY (prodid) REFERENCES product (pid),
+  CONSTRAINT orderid FOREIGN KEY (orderid) REFERENCES transactions (transid)
 );
 
 CREATE TABLE user_demand (

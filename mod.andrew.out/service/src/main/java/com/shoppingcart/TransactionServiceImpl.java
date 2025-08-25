@@ -55,7 +55,6 @@ public class TransactionServiceImpl implements TransactionService { // Renamed c
         transaction.setOrders(orders); // Set orders list
 
         transactionRepository.save(transaction);
-        orderRepository.saveAll(orders); // Save all order items
 
         // Send transaction success email
         try {
