@@ -28,7 +28,7 @@ class TransactionServiceImplTest { // Renamed class
     private ProductRepository productRepository;
 
     @Mock
-    private MailService mailService;
+    private EmailService emailService;
 
     @InjectMocks
     private TransactionServiceImpl transactionService; // Inject TransactionServiceImpl
@@ -57,7 +57,7 @@ class TransactionServiceImplTest { // Renamed class
         when(transactionRepository.save(any(Transaction.class))).thenAnswer(i -> i.getArguments()[0]);
         
 
-        doNothing().when(mailService).sendTransactionSuccessEmail(anyString(), anyString(), anyString(), anyDouble());
+        doNothing().when(emailService).sendTransactionSuccessEmail(anyString(), anyString(), anyString(), anyDouble());
 
         Transaction transaction = transactionService.createTransaction(user, userCartItems); // Call createTransaction
 
@@ -67,7 +67,7 @@ class TransactionServiceImplTest { // Renamed class
         // Removed status check from Transaction
         verify(transactionRepository, times(1)).save(any(Transaction.class));
         
-        verify(mailService, times(1)).sendTransactionSuccessEmail(user.getEmail(), user.getName(), transaction.getTransid(), transaction.getAmount());
+        verify(emailService, times(1)).sendTransactionSuccessEmail(user.getEmail(), user.getName(), transaction.getTransid(), transaction.getAmount());
     }
 
     @Test

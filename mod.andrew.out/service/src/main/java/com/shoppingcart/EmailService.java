@@ -1,6 +1,5 @@
 package com.shoppingcart;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,11 +12,13 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
-    @Autowired
-    private TemplateEngine templateEngine;
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+    }
 
     public void sendRegistrationSuccessEmail(String to, String name) throws MessagingException {
         Context context = new Context();
@@ -55,6 +56,16 @@ public class EmailService {
         String htmlContent = templateEngine.process("product-available", context);
 
         sendHtmlEmail(to, "Product " + productName + " is Now Available at Ellison Electronics", htmlContent);
+    }
+
+    public void sendContactMessage(String toEmail, String subject, String messageContent) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+        helper.setText(messageContent, false); // Not HTML
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setFrom("noreply@ellison.com"); // Replace with your sender email
+        mailSender.send(message);
     }
 
     private void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
