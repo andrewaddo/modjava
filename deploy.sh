@@ -37,7 +37,7 @@ echo_green "Starting Shopping Cart Application Deployment to GKE..."
 echo_green "\nBuilding all modules with dependencies..."
 mvn clean install -U -f /home/ducdo/workspace/modjava/mod.andrew.out/pom.xml
 echo_green "\nBuilding the Docker image..."
-docker build --no-cache -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.andrew.out/web-app
+docker build --no-cache -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.phase3.out/web-app
 
 # Step 2: Push the Docker image to Google Container Registry
 echo_green "\nPushing the Docker image to Google Container Registry..."

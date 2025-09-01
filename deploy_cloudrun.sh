@@ -34,7 +34,7 @@ echo_green "Starting Shopping Cart Application Deployment to Cloud Run..."
 
 # Step 1: Build the Docker image
 echo_green "\nBuilding the Docker image..."
-docker build -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.andrew.out/web-app
+docker build -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.phase3.out/web-app
 
 # Step 2: Push the Docker image to Google Container Registry
 echo_green "\nPushing the Docker image to Google Container Registry..."
@@ -42,35 +42,16 @@ docker push gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT
 
 # Step 3: Deploy to Cloud Run
 echo_green "\nDeploying to Cloud Run..."
-# IAM policy configuration is handled manually for controlled environments like Argolis.
-# gcloud iam service-accounts create "${SERVICE_ACCOUNT_NAME}" \
-#   --display-name "Service Account for Cloud Run" \
-#   --project="${PROJECT_ID}"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/cloudsql.client"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/logging.logWriter"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/monitoring.metricWriter"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/trace.agent"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/cloudtasks.enqueuer"
-
-# gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-#   --member="serviceAccount:${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
-#   --role="roles/secretmanager.secretAccessor"
-
+gcloud run deploy shopping-cart-web-app \
+  --image gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT \
+  --platform managed \
+  --region ${REGION} \
+  --port=8080 \
+  --allow-unauthenticated \
+  --add-cloudsql-instances=${CLOUD_SQL_CONNECTION_NAME} \
+  --set-env-vars=SPRING_DATASOURCE_URL="jdbc:postgresql:///testdb?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.postgres.SocketFactory" \
+  --set-env-vars=SPRING_DATASOURCE_USERNAME="testuser" \
+  --set-env-vars=SPRING_DATASOURCE_PASSWORD="${DB_USER_PASSWORD}"
 
 echo_green "\nCloud Run deployment complete!"
-echo_green "You can find your service at: https://${REGION}-run.app/shopping-cart-web-app"
+
