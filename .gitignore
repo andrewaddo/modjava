@@ -7,6 +7,3 @@ app.log
 webapp.pid
 webapp.log
 mod.andrew.out/web-app/src/main/resources/application.properties
-# BMAD (local only)
-.bmad-core/
-.bmad-*/
