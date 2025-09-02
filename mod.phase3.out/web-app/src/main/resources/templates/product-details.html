@@ -24,9 +24,17 @@
                         <p th:text="${product.info}">Product Description</p>
 
                         <!-- AI-Powered Product Information -->
-                        <div th:if="${aiProductInfo != null and aiProductInfo.description != null}">
+                        <div id="ai-info-container">
                             <h4>AI-Powered Insights:</h4>
-                            <p th:text="${aiProductInfo.description}"></p>
+                            <div id="ai-info-loader">
+                                <p>Loading AI product info...</p>
+                            </div>
+                            <div id="ai-info-content" style="display: none;">
+                                <p id="ai-info-description"></p>
+                            </div>
+                            <div id="ai-info-error" style="display: none;">
+                                <p>Could not retrieve AI-powered product information at this time.</p>
+                            </div>
                         </div>
                         <!-- End AI-Powered Product Information -->
 
@@ -46,5 +54,29 @@
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+            var productName = /*[[${product.name}]]*/ 'default';
+            $.ajax({
+                url: "/api/product/" + productName + "/ai-info",
+                success: function(data) {
+                    $('#ai-info-loader').hide();
+                    if (data.description) {
+                        $('#ai-info-description').text(data.description);
+                        $('#ai-info-content').show();
+                    } else {
+                        $('#ai-info-error').show();
+                    }
+                },
+                error: function() {
+                    $('#ai-info-loader').hide();
+                    $('#ai-info-error').show();
+                }
+            });
+        });
+        /*]]>*/
+    </script>
 </body>
 </html>

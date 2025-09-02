@@ -4,8 +4,8 @@ import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 @Service
 public class AiProductInfoService {
@@ -19,6 +19,7 @@ public class AiProductInfoService {
         this.client = client;
     }
 
+    @Cacheable("aiProductInfo")
     public AiProductInfoDTO getAiProductInfo(String productName) {
         if (client == null) {
             return new AiProductInfoDTO("Error: GenAI client not available.");

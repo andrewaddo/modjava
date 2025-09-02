@@ -33,7 +33,6 @@ class AiProductInfoServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Instantiate the service with the mock client
         aiProductInfoService = new AiProductInfoService(mockClient);
     }
 
@@ -42,7 +41,6 @@ class AiProductInfoServiceTest {
         // Arrange
         String expectedDescription = "This is a fantastic product.";
 
-        // Use reflection to mock the final 'models' field
         Field modelsField = Client.class.getDeclaredField("models");
         modelsField.setAccessible(true);
         modelsField.set(mockClient, mockModels);
@@ -61,7 +59,6 @@ class AiProductInfoServiceTest {
     @Test
     void getAiProductInfo_apiError() throws Exception {
         // Arrange
-        // Use reflection to mock the final 'models' field
         Field modelsField = Client.class.getDeclaredField("models");
         modelsField.setAccessible(true);
         modelsField.set(mockClient, mockModels);
@@ -79,7 +76,6 @@ class AiProductInfoServiceTest {
     @Test
     void getAiProductInfo_clientNotInitialized() {
         // Arrange
-        // Service is initialized with a null client
         aiProductInfoService = new AiProductInfoService(null);
 
         // Act
