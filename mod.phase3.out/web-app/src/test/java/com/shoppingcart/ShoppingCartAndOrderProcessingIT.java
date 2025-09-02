@@ -27,10 +27,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ShoppingCartApplication.class)
-@Testcontainers
-@ActiveProfiles("test")
-public class ShoppingCartAndOrderProcessingIT {
+public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
 
     @LocalServerPort
     private int port;

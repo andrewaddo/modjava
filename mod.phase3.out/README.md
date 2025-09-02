@@ -8,6 +8,8 @@ Aug 31 : starting with BMAD to implement / enhance the search function
 
 ```logs
 /p
+ok, make a git commit to mark this milestone, then proceed to the next story  
+/p
 @architect please review the generated materials, if it is ok, proceed         │
 │   with develeper role to implement the shopping-cart-search feature in           │
 │   mod.phase3.out/features/shopping-cart-search/prd.md         
@@ -239,6 +241,7 @@ The most significant concern is the change in the orders table's primary key. Th
 1. For cost optimisation, maybe it's a good strategy to avoid asking the agent to run test, check for errors and fix those, since the test logs can be huge. We can run the test separately, then copy/paste the error back to the agent. Once manual test past, ask the agent to run full test.
 1. The agent is obviously not great at CSS and GUI tests
 1. Flash is not even close yet for this task!
+1. Sometimes the agent failed to proceed, but immediately resolved all issues the morning after. What caused this behavior? 
 ```
                                        
 # Logs
@@ -286,4 +289,33 @@ psql -U postgres -d shoppingcart -f mod.phase3.out/web-app/src/main/resources/da
 
 Facing Gemini CLI ratelimit issue
 https://github.com/google-gemini/gemini-cli/issues/1502
+```
+
+# BMAD logs
+
+```logs
+@.bmad-core/agents/pm.md @.bmad-core/tasks/brownfield-create-epic.md
+/logs
+The above command started John, the PM
+/p
+you can find those in mod.phase3.out for the existing tech stack, source tree and coding standards.
+/p
+You can read mod.phase3.out/gemini-docs for existing docs of the project. For the enhancement, I want to implement a new feature that will provide additional product information using AI web search when a product is selected. 
+/p
+yes, please keep the  new docs under features/ai-product-info
+@ @.bmad-core/agents/sm.md Please draft the stories for the AI Product Information epic.
+/logs
+The above command started BOB, the SM
+/p
+should the stories be in the same features/ai-product-info folder or a separate docs folder ?
+/p
+can you edit the story to use an Gemini model API to perform the web           │
+│   search for the selected product ?
+/p
+hm, I changed my mind, let's keep the story generic. The specific API          │
+│   implementation using Gemini API or other APIs should be dediced later.         │
+│   Do you agree?
+/p
+yes, proceed with the Gemini API as the chosen solution                        │
+│     for now?    
 ```
