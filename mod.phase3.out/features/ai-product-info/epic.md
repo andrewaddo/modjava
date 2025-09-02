@@ -42,8 +42,8 @@ To enrich the user experience by providing AI-generated product details upon sel
 
 ### **Definition of Done**
 
-- [ ] All stories completed with acceptance criteria met.
-- [ ] Existing product selection functionality verified through testing.
-- [ ] The new AI information feature is working correctly.
-- [ ] Documentation for the new service and feature flag is created.
-- [ ] No regression in existing features.
+- [x] All stories completed with acceptance criteria met.
+- [x] Existing product selection functionality verified through testing.
+- [x] The new AI information feature is working correctly.
+- [x] Documentation for the new service and feature flag is created.
+- [x] No regression in existing features.
