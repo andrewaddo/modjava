@@ -89,7 +89,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                
+                <configuration>
+                    <environmentVariables>
+                        <GOOGLE_API_KEY>${env.GOOGLE_API_KEY}</GOOGLE_API_KEY>
+                    </environmentVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

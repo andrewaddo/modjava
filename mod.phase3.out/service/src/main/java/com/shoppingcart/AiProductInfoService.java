@@ -19,17 +19,17 @@ public class AiProductInfoService {
         this.client = client;
     }
 
-    public AiProductInfoDTO getAiProductInfo(Long productId) {
+    public AiProductInfoDTO getAiProductInfo(String productName) {
         if (client == null) {
             return new AiProductInfoDTO("Error: GenAI client not available.");
         }
 
         try {
-            String prompt = "Provide a short, engaging product description for a product with ID: " + productId;
+            String prompt = "Provide a short, engaging product description for the product named: " + productName;
             GenerateContentResponse response = client.models.generateContent("gemini-1.5-flash", prompt, null);
             return new AiProductInfoDTO(response.text());
         } catch (Exception e) {
-            LOGGER.error("Error calling Gemini API for productId: {}", productId, e);
+            LOGGER.error("Error calling Gemini API for productName: {}", productName, e);
             return new AiProductInfoDTO("Could not retrieve AI-powered product information at this time.");
         }
     }

@@ -51,7 +51,7 @@ class AiProductInfoServiceTest {
         when(mockResponse.text()).thenReturn(expectedDescription);
 
         // Act
-        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo(123L);
+        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo("Test Product Name");
 
         // Assert
         assertNotNull(result);
@@ -69,7 +69,7 @@ class AiProductInfoServiceTest {
         when(mockModels.generateContent(anyString(), anyString(), any())).thenThrow(new RuntimeException("API Error"));
 
         // Act
-        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo(123L);
+        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo("Test Product Name");
 
         // Assert
         assertNotNull(result);
@@ -83,7 +83,7 @@ class AiProductInfoServiceTest {
         aiProductInfoService = new AiProductInfoService(null);
 
         // Act
-        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo(123L);
+        AiProductInfoService.AiProductInfoDTO result = aiProductInfoService.getAiProductInfo("Test Product Name");
 
         // Assert
         assertNotNull(result);

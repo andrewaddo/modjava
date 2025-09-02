@@ -25,6 +25,9 @@ public class ProductControllerTest {
     private ProductService productService;
 
     @MockBean
+    private AiProductInfoService aiProductInfoService;
+
+    @MockBean
     private UserRepository userRepository;
 
     @Test

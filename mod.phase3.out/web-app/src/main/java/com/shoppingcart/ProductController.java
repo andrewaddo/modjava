@@ -24,7 +24,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    
+    @Autowired
+    private AiProductInfoService aiProductInfoService;
 
     @GetMapping("/test")
     public String test() {
@@ -111,6 +112,11 @@ public class ProductController {
             return "error/404"; // Assuming you have a 404 error page
         }
         model.addAttribute("product", product);
+        
+        // Add AI-powered product info
+        AiProductInfoService.AiProductInfoDTO aiInfo = aiProductInfoService.getAiProductInfo(product.getName());
+        model.addAttribute("aiProductInfo", aiInfo);
+        
         return "product-details";
     }
 }
