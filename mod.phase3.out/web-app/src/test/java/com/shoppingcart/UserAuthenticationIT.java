@@ -1,13 +1,8 @@
 package com.shoppingcart;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -28,7 +23,6 @@ public class UserAuthenticationIT extends BaseIntegrationTest {
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13");
 
-    private WebDriver driver;
     private WebDriverWait wait;
 
     @DynamicPropertySource
@@ -40,26 +34,13 @@ public class UserAuthenticationIT extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-    }
-
-    @AfterEach
-    void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 
     @Test
     void testUserRegistrationAndLogin() {
         // Navigate to registration page
-        driver.get("http://localhost:" + port + "/register");
+        driver.get("http://host.testcontainers.internal:" + port + "/register");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("email")));
 
         // Fill registration form
@@ -86,7 +67,7 @@ public class UserAuthenticationIT extends BaseIntegrationTest {
     @Test
     void testUserLogout() {
         // First, log in a user
-        driver.get("http://localhost:" + port + "/login");
+        driver.get("http://host.testcontainers.internal:" + port + "/login");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         driver.findElement(By.id("username")).sendKeys("test@example.com");
         driver.findElement(By.id("password")).sendKeys("password");

@@ -1,14 +1,9 @@
 package com.shoppingcart;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -43,7 +38,6 @@ class ShoppingCartIT extends BaseIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private WebDriver driver;
     private WebDriverWait wait;
 
     @DynamicPropertySource
@@ -55,12 +49,6 @@ class ShoppingCartIT extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         // Create a user
@@ -83,17 +71,10 @@ class ShoppingCartIT extends BaseIntegrationTest {
         productRepository.save(product);
     }
 
-    @AfterEach
-    void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
-
     @Test
     void testAddToCartAndCheckout() {
         // Login
-        driver.get("http://localhost:" + port + "/login");
+        driver.get("http://host.testcontainers.internal:" + port + "/login");
         driver.findElement(By.id("username")).sendKeys("user@test.com");
         driver.findElement(By.id("password")).sendKeys("password");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
@@ -105,14 +86,14 @@ class ShoppingCartIT extends BaseIntegrationTest {
         addToCartButton.click();
         
         // Go to cart
-        driver.get("http://localhost:" + port + "/cart");
+        driver.get("http://host.testcontainers.internal:" + port + "/cart");
 
         // Verify product is in cart
         WebElement productName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[text()='Test Camera']")));
         assertEquals("Test Camera", productName.getText());
 
         // Proceed to checkout
-        driver.get("http://localhost:" + port + "/checkout");
+        driver.get("http://host.testcontainers.internal:" + port + "/checkout");
 
         // Wait for the payment page to load
         wait.until(ExpectedConditions.urlContains("/checkout"));
@@ -128,7 +109,7 @@ class ShoppingCartIT extends BaseIntegrationTest {
         
         // // Verify order is placed and cart is empty
         // wait.until(ExpectedConditions.urlContains("/orders"));  
-        // driver.get("http://localhost:" + port + "/cart");
+        // driver.get("http://host.testcontainers.internal:" + port + "/cart");
         
         // WebElement emptyCartMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[text()='Your cart is empty!']")));
         // assertTrue(emptyCartMessage.isDisplayed());
