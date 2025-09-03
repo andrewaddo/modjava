@@ -1,14 +1,12 @@
 package com.shoppingcart;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -42,7 +41,6 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private WebDriver driver;
     private WebDriverWait wait;
 
     @DynamicPropertySource
@@ -54,12 +52,6 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         // Setup test user and product (similar to ShoppingCartIT)
@@ -81,17 +73,12 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
         productRepository.save(product);
     }
 
-    @AfterEach
-    void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+    
 
     @Test
     void testShoppingCartAndOrderProcessing() {
         // User Login
-        driver.get("http://localhost:" + port + "/login");
+        driver.get("http://host.testcontainers.internal:" + port + "/login");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         driver.findElement(By.id("username")).sendKeys("user@test.com");
         driver.findElement(By.id("password")).sendKeys("password");
@@ -100,7 +87,7 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Logout']"))); // Ensure logged in
 
         // Add product to cart
-        driver.get("http://localhost:" + port + "/product-details/P001");
+        driver.get("http://host.testcontainers.internal:" + port + "/product-details/P001");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Add to Cart']")));
         driver.findElement(By.xpath("//button[text()='Add to Cart']")).click();
         wait.until(ExpectedConditions.urlContains("/cart"));
@@ -111,7 +98,7 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
 
         // Remove product from cart
         // Navigate to cart page explicitly if not already there
-        driver.get("http://localhost:" + port + "/cart");
+        driver.get("http://host.testcontainers.internal:" + port + "/cart");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Remove']")));
         driver.findElement(By.xpath("//a[text()='Remove']")).click();
         wait.until(ExpectedConditions.urlContains("/cart"));
@@ -120,13 +107,13 @@ public class ShoppingCartAndOrderProcessingIT extends BaseIntegrationTest {
         assertTrue(driver.getPageSource().contains("Your cart is empty!"));
 
         // Add product to cart again for checkout
-        driver.get("http://localhost:" + port + "/product-details/P001");
+        driver.get("http://host.testcontainers.internal:" + port + "/product-details/P001");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Add to Cart']")));
         driver.findElement(By.xpath("//button[text()='Add to Cart']")).click();
         wait.until(ExpectedConditions.urlContains("/cart"));
 
         // Proceed to checkout
-        driver.get("http://localhost:" + port + "/cart");
+        driver.get("http://host.testcontainers.internal:" + port + "/cart");
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[text()='Checkout']")));
         driver.findElement(By.xpath("//a[text()='Checkout']")).click();
         wait.until(ExpectedConditions.urlContains("/checkout"));

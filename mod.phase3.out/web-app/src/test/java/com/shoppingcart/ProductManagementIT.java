@@ -1,16 +1,11 @@
 
 package com.shoppingcart;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,8 +35,6 @@ class ProductManagementIT extends BaseIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private WebDriver driver;
-
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
@@ -51,13 +44,6 @@ class ProductManagementIT extends BaseIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        WebDriverManager.chromedriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
-
         User admin = new User();
         admin.setEmail("admin@test.com");
         admin.setPassword(passwordEncoder.encode("password"));
@@ -68,14 +54,9 @@ class ProductManagementIT extends BaseIntegrationTest {
         userRepository.save(admin);
     }
 
-    @AfterEach
-    void tearDown() {
-        driver.quit();
-    }
-
     @Test
     void testProductManagement() {
-        driver.get("http://localhost:" + port + "/admin/products");
+        driver.get("http://host.testcontainers.internal:" + port + "/admin/products");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         wait.until(ExpectedConditions.urlContains("/login"));
