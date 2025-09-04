@@ -95,8 +95,53 @@ cd mod.phase3.out
 ./mvnw -f web-app/pom.xml spring-boot:run
 ```
 
+## To run e2e test using the generated binary
+
+```bash
+java -jar /home/ducdo/workspace/modjava/mod.phase3.out/web-app/target/web-app-0.0.1-SNAPSHOT.jar
+```                                          
+
+## Deploy to GCP
+
+### To CloudRun
+
+1. Create GCP resources
+
+```bash
+./setup_gcp_resources.sh
+e.g. ./setup_gcp_resources.sh
+# provide inputs such as
+## project: addo-argolis-demo 
+## region: asia-southeast1
+## DB root password: PASSWORD
+## SMTP password: PASSWORD
+# The script will create a database shopping-cart-db and testdb and testuser in the db
+```
+
+2. Create secrets to store your API KEY, db password, smtp password
+3. Edit application-cloud.properties accordingly
+
+```
+export GOOGLE_API_KEY="YOUR_GEMINI_API_KEY"
+gcloud secrets create my-google-api-key --replication-policy="automatic"
+echo -n "$GOOGLE_API_KEY" | gcloud secrets versions add my-google-api-key --data-file=-
+
+export DB_USER_PASSWORD="PASSWORD"
+gcloud secrets create db-user-password --replication-policy="automatic"
+echo -n "$DB_USER_PASSWORD" | gcloud secrets versions add db-user-password --data-file=-
+
+export SMTP_APP_PASSWORD="PASSWORD"
+gcloud secrets create smtp-app-password --replication-policy="automatic"
+echo -n "$SMTP_APP_PASSWORD" | gcloud secrets versions add smtp-app-password --data-file=-
+```
+
+```bash
+./deploy_cloudrun.sh <PROJECT_ID> <REGION>
+e.g. ./deploy_cloudrun.sh addo-argolis-demo asia-southeast1
+```
+
 ### Additional information
 
 1. Existing users
    1. Guest: guest@gmail.com / guest
-   1. Admin: shoppingcartemail@gmail.com / admin
+   1. Admin: shoppingcartappemail@gmail.com / admin

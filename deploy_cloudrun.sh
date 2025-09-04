@@ -14,23 +14,24 @@ echo_red() {
 
 # --- Usage ---
 usage() {
-  echo "Usage: $0 <PROJECT_ID> <REGION> <DB_USER_PASSWORD> <CLOUD_SQL_CONNECTION_NAME>"
+  echo "Usage: $0 <PROJECT_ID> <REGION>"
   exit 1
 }
 
 # --- Check for arguments ---
-if [ "$#" -ne 4 ]; then
+if [ "$#" -ne 2 ]; then
   usage
 fi
 
 # --- Assign arguments to variables ---
 PROJECT_ID=$1
 REGION=$2
-DB_USER_PASSWORD=$3
-CLOUD_SQL_CONNECTION_NAME=$4
 
 # --- Main Script ---
 echo_green "Starting Shopping Cart Application Deployment to Cloud Run..."
+
+echo_green "\nBuilding the project with Maven..."
+mvn clean install -f /home/ducdo/workspace/modjava/mod.phase3.out/pom.xml
 
 # Step 1: Build the Docker image
 echo_green "\nBuilding the Docker image..."
@@ -48,10 +49,9 @@ gcloud run deploy shopping-cart-web-app \
   --region ${REGION} \
   --port=8080 \
   --allow-unauthenticated \
-  --add-cloudsql-instances=${CLOUD_SQL_CONNECTION_NAME} \
-  --set-env-vars=SPRING_DATASOURCE_URL="jdbc:postgresql:///testdb?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.postgres.SocketFactory" \
-  --set-env-vars=SPRING_DATASOURCE_USERNAME="testuser" \
-  --set-env-vars=SPRING_DATASOURCE_PASSWORD="${DB_USER_PASSWORD}"
+  --set-env-vars=SPRING_PROFILES_ACTIVE=cloud \
+  --set-secrets=GOOGLE_API_KEY=my-google-api-key:latest \
+  --set-secrets=SPRING_DATASOURCE_PASSWORD=db-user-password:latest \
+  --set-secrets=SPRING_MAIL_PASSWORD=smtp-app-password:latest
 
 echo_green "\nCloud Run deployment complete!"
-

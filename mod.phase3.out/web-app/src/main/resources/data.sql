@@ -23,7 +23,7 @@ INSERT INTO product (pid, name, type, info, price, quantity, image) VALUES ('P20
 INSERT INTO product (pid, name, type, info, price, quantity, image) VALUES ('P20230423084144', 'MOTOROLA G32 Mobile', 'mobile', 'With a mind-blowing 16.51 cm (6.5) FHD+ Ultra-wide display and a refresh rate of 90 Hz, this phone makes it possible to multitask while being entertained.', 11999, 1, 'https://storage.googleapis.com/addo-modjava/productimages/P20230423084144.jpg');
 
 INSERT INTO "app_user" (email, name, mobile, address, pincode, password, role) VALUES ('guest@gmail.com', 'Guest User', 9876543234, 'K.P Road, Gaya, Bihar - India', 879767, '$2a$12$FboxczFOuo0BDTVr3LTdJeYPJFLONirFgRqan6BI6221mhI4nPLM6', 'USER');
-INSERT INTO "app_user" (email, name, mobile, address, pincode, password, role) VALUES ('shoppingcartemail@gmail.com', 'Admin User', 9876543459, 'ABC Colony, Newtown, West Bengal', 786890, '$2a$12$eHQ2OHWIQsEkIpkYUPp/L.9cy79gnLYqwzW39IgDd3CizmGEEBj8K', 'ADMIN');
+INSERT INTO "app_user" (email, name, mobile, address, pincode, password, role) VALUES ('shoppingcartappemail@gmail.com', 'Admin User', 9876543459, 'ABC Colony, Newtown, West Bengal', 786890, '$2a$12$eHQ2OHWIQsEkIpkYUPp/L.9cy79gnLYqwzW39IgDd3CizmGEEBj8K', 'ADMIN');
 
 INSERT INTO transactions (transid, username, "time", amount) VALUES ('TR10001', 'guest@gmail.com', '2023-04-23 09:26:56', 125999);
 
