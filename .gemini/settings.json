@@ -1,3 +1,6 @@
 {
-    "contextFileName": "GEMINI-Andrew.md"
+    "contextFileName": "GEMINI-Andrew.md",
+    "fileFiltering": {
+        "respectGitIgnore": false
+    }
 }
