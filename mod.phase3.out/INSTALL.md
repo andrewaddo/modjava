@@ -85,6 +85,11 @@ cd mod.phase3.out
 
 ## To run e2e test locally
 
+1. Create a Gmail email account
+2. [Create a Gmail app password](https://myaccount.google.com/apppasswords)
+3. Create application.properties from application.properties.sample under web-app/src/main/resources
+4. Update the application.properties file with the DB and Gmail credentials
+
 ```bash
 cd mod.phase3.out
 ./mvnw -f web-app/pom.xml spring-boot:run
