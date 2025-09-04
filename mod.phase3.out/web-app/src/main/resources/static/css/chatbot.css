@@ -1,0 +1,30 @@
+
+/* Styles for the chatbot button */
+#chat-button {
+    /* Already defined inline, but can be extended here */
+}
+
+/* Styles for the chatbot window */
+#chat-window {
+    /* Already defined inline, but can be extended here */
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-messages div {
+    max-width: 80%;
+}
+
+#chat-messages div:nth-child(odd) { /* Bot messages */
+    align-self: flex-start;
+    background-color: #e0e0e0;
+}
+
+#chat-messages div:nth-child(even) { /* User messages */
+    align-self: flex-end;
+    background-color: #dcf8c6;
+    text-align: right;
+}

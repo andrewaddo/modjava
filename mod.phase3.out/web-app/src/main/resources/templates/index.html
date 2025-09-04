@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/changes.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/chatbot.css">
 </head>
 
 <body style="background-color: #E6F9E6;">
@@ -44,4 +45,25 @@
     </div>
 
     <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <!-- Chatbot Button -->
+    <button id="chat-button" style="position: fixed; bottom: 20px; right: 20px; background-color: #007bff; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">💬</button>
+
+    <!-- Chatbot Window -->
+    <div id="chat-window" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; height: 400px; background-color: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); flex-direction: column; z-index: 1000;">
+        <div style="background-color: #007bff; color: white; padding: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span>Chatbot</span>
+            <button id="close-chat" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+        </div>
+        <div id="chat-messages" style="flex-grow: 1; padding: 10px; overflow-y: auto; border-bottom: 1px solid #eee;">
+            <!-- Chat messages will appear here -->
+            <div style="background-color: #e0e0e0; padding: 8px; border-radius: 5px; margin-bottom: 5px; align-self: flex-start;">Hello! How can I help you today?</div>
+        </div>
+        <div style="padding: 10px; display: flex;">
+            <input type="text" id="chat-input" placeholder="Type your message..." style="flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+            <button id="send-chat" style="background-color: #007bff; color: white; border: none; border-radius: 5px; padding: 8px 12px; margin-left: 5px; cursor: pointer;">Send</button>
+        </div>
+    </div>
+
+    <script src="/js/chatbot.js"></script>
 </body>
