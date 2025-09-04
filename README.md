@@ -8,7 +8,7 @@ This project serves as an experimental endeavor to explore the capabilities of t
 *   **Objective**: To migrate the legacy application to a virtual machine (VM) and CloudSQL using existing migration solutions.
 *   **Tools/Methods**: Migration Center, mcdc, DMS.
 
-### Phase 2: Autonomous Migration with Gemini CLI Agent (Work in Progress)
+### Phase 2: Autonomous Migration with Gemini CLI Agent
 *   **Objective**: To leverage the Gemini CLI agent in an autonomous mode (with minimal human supervision) to perform migration tasks.
 *   **Focus**: Learning the capabilities and limitations of the Gemini CLI agent in an autonomous setting.
 
