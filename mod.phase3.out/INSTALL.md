@@ -145,3 +145,37 @@ e.g. ./deploy_cloudrun.sh addo-argolis-demo asia-southeast1
 1. Existing users
    1. Guest: guest@gmail.com / guest
    1. Admin: shoppingcartappemail@gmail.com / admin
+
+## Appendix
+
+```bash
+## Install Chrome
+sudo tee /etc/yum.repos.d/google-chrome.repo << 'EOF'
+[google-chrome]
+name=google-chrome
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+EOF
+
+### Re-install Chrome
+sudo dnf remove google-chrome-stable
+sudo rpm -i /path/to/google-chrome-stable-139.0.7258.66-1.x86_64.rpm
+
+## Install Maven wrapper
+cd mod.phase3.out && mvn -N wrapper:wrapper
+
+## Manually deploy the sql schema and data
+psql -U postgres -d shoppingcart -f mod.phase3.out/web-app/src/main/resources/schema.sql
+psql -U postgres -d shoppingcart -f mod.phase3.out/web-app/src/main/resources/data.sql
+
+## Run the app and output logs
+mvn -f mod.phase3.out/web-app/pom.xml spring-boot:run > mod.phase3.out/web-app/app.log 2>&1 &
+
+## Kill background running processes
+sudo lsof -i :8081
+sudo netstat -tulnp | grep 8081
+kill -9 <PID>
+```
+

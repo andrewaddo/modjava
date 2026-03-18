@@ -24,10 +24,11 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/products", "/product-details/**", "/api/product/**", "/favicon.ico").permitAll()
+                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/products", "/product-details/**", "/api/product/**", "/api/chatbot/**", "/favicon.ico").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/chatbot/**")) // Disable CSRF for chatbot API
             .formLogin(formLogin ->
                 formLogin
                     .loginPage("/login")
@@ -38,7 +39,7 @@ public class SecurityConfig {
                     .logoutSuccessUrl("/") // Redirect to home page
                     .permitAll()
             )
-            ; // Temporarily disable CSRF for easier testing, enable in production
+            ;
         return http.build();
     }
 
