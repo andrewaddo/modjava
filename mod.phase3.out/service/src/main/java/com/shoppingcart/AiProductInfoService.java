@@ -27,7 +27,7 @@ public class AiProductInfoService {
 
         try {
             String prompt = "Provide a short, engaging product description for the product named: " + productName;
-            GenerateContentResponse response = client.models.generateContent("gemini-1.5-flash", prompt, null);
+            GenerateContentResponse response = client.models.generateContent("gemini-2.5-flash", prompt, null);
             return new AiProductInfoDTO(response.text());
         } catch (Exception e) {
             LOGGER.error("Error calling Gemini API for productName: {}", productName, e);

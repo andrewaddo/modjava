@@ -55,7 +55,7 @@ public class ChatbotController {
                                   "Example: {\"intent\": \"product_inquiry\", \"product_query\": \"Laptop Pro\"}\n" +
                                   "Message: " + userMessage;
 
-            intentResponseJson = genAiClient.models.generateContent("gemini-1.5-flash", intentPrompt, null).text();
+            intentResponseJson = genAiClient.models.generateContent("gemini-2.5-flash", intentPrompt, null).text();
             
             // Clean up the JSON string: replace single quotes with double quotes for robust parsing
             intentResponseJson = intentResponseJson.replace('"', '"');
@@ -95,11 +95,11 @@ public class ChatbotController {
                                              "Here is the product information: \"" + productInfo + "\". " +
                                              "Generate a helpful and concise response based on this information. " +
                                              "If the product was not found, inform the user politely.";
-                String aiResponse = genAiClient.models.generateContent("gemini-1.5-flash", finalResponsePrompt, null).text();
+                String aiResponse = genAiClient.models.generateContent("gemini-2.5-flash", finalResponsePrompt, null).text();
                 response.put("response", aiResponse);
             } else {
                 // Step 4: General question, use GenAI directly
-                String aiResponse = genAiClient.models.generateContent("gemini-1.5-flash", userMessage, null).text();
+                String aiResponse = genAiClient.models.generateContent("gemini-2.5-flash", userMessage, null).text();
                 response.put("response", aiResponse);
             }
 
