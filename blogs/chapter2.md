@@ -136,12 +136,10 @@ Even without changing a single line of application code, we've realized massive 
 
 ## Summary of the Cloud Migration
 
-| Challenge | Solution | Benefit |
-| :--- | :--- | :--- |
-| Lack of Inventory | Migration Center (mcdc) | Full visibility into dependencies. |
-| Risky DB Migration | Database Migration Service (DMS) | High-fidelity, minimal downtime. |
-| Operational Overhead | GCE & Cloud SQL | Managed patching, backups, and scaling. |
-| Security Concerns | Google Cloud Networking & IAM | Enterprise-grade security posture. |
+*   **Lack of Inventory:** Resolved using **Migration Center (mcdc)**, providing full visibility into application and infrastructure dependencies.
+*   **Risky Database Migration:** Managed via **Database Migration Service (DMS)**, ensuring high-fidelity data transfer with minimal downtime.
+*   **Operational Overhead:** Addressed by moving to **GCE & Cloud SQL**, leveraging managed patching, automated backups, and seamless scaling.
+*   **Security Concerns:** Hardened using **Google Cloud Networking & IAM**, establishing an enterprise-grade security posture and identity-based access control.
 
 ## The Next Step: Autonomous Modernization
 
