@@ -39,8 +39,8 @@ flowchart LR
     E -->|Implements TDD| F["Code and Tests"]
     F --> G["QA Agent"]
     G -->|Validates UAT| H{"Gate Pass?"}
-    H -- Yes --> I["Feature Complete"]
-    H -- No -->|Rejects| E
+    H -->|Yes| I["Feature Complete"]
+    H -->|No| E
     
     style A fill:#fff2cc,stroke:#fbbc04
     style C fill:#fff2cc,stroke:#fbbc04
