@@ -6,9 +6,9 @@ Now, we reach the final and most exciting chapter of our journey: **Innovation**
 
 ## The Foundation: Why Modernization Mattered
 
-Before we dive into the AI features, it’s important to understand *why* the Phase 3 modernization was the prerequisite for this success. In the original legacy monolith, business logic was tangled inside JSPs and Servlets. Adding AI would have required "hacking" into a fragile codebase.
+Before we dive into the AI features, it’s important to understand *why* the modernization journey described in [Chapter 4](./chapter4.md) was the prerequisite for this success. In the original legacy monolith, business logic was tangled inside JSPs and Servlets. Adding AI would have required "hacking" into a fragile codebase.
 
-As described in our **Phase 3 Architecture** (see `README.md`), we decoupled the application into clear layers:
+As described in our **modernized architecture**, we decoupled the application into clear layers:
 - **RESTful APIs:** The backend now communicates via standard JSON endpoints.
 - **Service Layer:** Business logic is isolated and easily testable.
 - **Repository Layer:** Data access is abstracted via Spring Data JPA.
@@ -98,9 +98,6 @@ The journey from a "black box" legacy monolith to an AI-powered modern applicati
 However, the most important lesson we learned is that **the human element remains indispensable**. An experienced developer or architect is crucial to ensure the **feasibility, quality, and security** of the project. The AI provides the speed and the power, but the human provides the direction, the guardrails, and the final seal of quality.
 
 Modernization is no longer a burden; it is an invitation to innovate. With Gemini CLI and the BMAD method, the path from legacy to legendary is shorter than ever before.
-
----
-*Thank you for following our journey. Now, it's your turn to modernize!*
 
 ---
 *Thank you for following our journey. Now, it's your turn to modernize!*
