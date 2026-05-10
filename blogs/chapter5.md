@@ -31,7 +31,7 @@ By giving agents distinct personas and workflows, we ensure they perform tasks w
 ### The Agile Agent Workflow:
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["PO Agent"] -->|Generates| B["Epic"]
     B --> C["BA Agent"]
     C -->|Breaks down to| D["User Stories"]
