@@ -2,7 +2,7 @@
 
 In [Chapter 4](./chapter4.md), we successfully transitioned our legacy monolith into a modern, decoupled Spring Boot application. By working in partnership with the **Gemini CLI agent**, we achieved a 80% reduction in modernization time, creating a stable foundation with a clean Controller-Service-Repository architecture. 
 
-Now, we reach the final and most exciting chapter of our journey: **Innovation**. With the technical debt of the past cleared, we are no longer just "keeping the lights on." We are now building the future of our shopping cart application by integrating advanced AI capabilities.
+Now, we reach the final and most exciting chapter of our journey—the home stretch: **Innovation**. With the technical debt of the past cleared, we are no longer just "keeping the lights on." We are now building the future of our shopping cart application by integrating advanced AI capabilities.
 
 ## The Foundation: Why Modernization Mattered
 
