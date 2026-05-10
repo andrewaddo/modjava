@@ -32,14 +32,14 @@ By giving agents distinct personas and workflows, we ensure they perform tasks w
 
 ```mermaid
 flowchart LR
-    A["PO Agent"] -->|Generates| B("Epic")
+    A["PO Agent"] -->|Generates| B["Epic"]
     B --> C["BA Agent"]
-    C -->|Breaks down to| D("User Stories")
+    C -->|Breaks down to| D["User Stories"]
     D --> E["Dev Agent"]
-    E -->|Implements (TDD)| F("Code & Tests")
+    E -->|Implements TDD| F["Code and Tests"]
     F --> G["QA Agent"]
-    G -->|Validates (UAT)| H{"Gate Pass?"}
-    H -- Yes --> I(["Feature Complete"])
+    G -->|Validates UAT| H{"Gate Pass?"}
+    H -- Yes --> I["Feature Complete"]
     H -- No -->|Rejects| E
     
     style A fill:#fff2cc,stroke:#fbbc04
