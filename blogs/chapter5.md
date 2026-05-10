@@ -29,6 +29,25 @@ By giving agents distinct personas and workflows, we ensure they perform tasks w
 - **QA Engineer:** Implements User Acceptance Tests (UAT) and performs final validation.
 
 ### The Agile Agent Workflow:
+
+```mermaid
+flowchart LR
+    A["PO Agent"] -->|Generates| B("Epic")
+    B --> C["BA Agent"]
+    C -->|Breaks down to| D("User Stories")
+    D --> E["Dev Agent"]
+    E -->|Implements (TDD)| F("Code & Tests")
+    F --> G["QA Agent"]
+    G -->|Validates (UAT)| H{"Gate Pass?"}
+    H -- Yes --> I(["Feature Complete"])
+    H -- No -->|Rejects| E
+    
+    style A fill:#fff2cc,stroke:#fbbc04
+    style C fill:#fff2cc,stroke:#fbbc04
+    style E fill:#d4edda,stroke:#28a745
+    style G fill:#f8d7da,stroke:#dc3545
+```
+
 1.  **Epic Generation:** The PO agent analyzes the project and generates a new Epic (e.g., "AI-Powered Shopping Assistant").
 2.  **Story Decomposition:** The BA agent breaks the Epic into actionable stories with clear acceptance criteria.
 3.  **Implementation:** The Developer agent implements the stories, strictly following TDD principles.
@@ -79,6 +98,9 @@ The journey from a "black box" legacy monolith to an AI-powered modern applicati
 However, the most important lesson we learned is that **the human element remains indispensable**. An experienced developer or architect is crucial to ensure the **feasibility, quality, and security** of the project. The AI provides the speed and the power, but the human provides the direction, the guardrails, and the final seal of quality.
 
 Modernization is no longer a burden; it is an invitation to innovate. With Gemini CLI and the BMAD method, the path from legacy to legendary is shorter than ever before.
+
+---
+*Thank you for following our journey. Now, it's your turn to modernize!*
 
 ---
 *Thank you for following our journey. Now, it's your turn to modernize!*
