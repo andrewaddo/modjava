@@ -35,7 +35,7 @@ mvn clean install -f /home/ducdo/workspace/modjava/mod.phase3.out/pom.xml
 
 # Step 1: Build the Docker image
 echo_green "\nBuilding the Docker image..."
-docker build -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.phase3.out/web-app
+docker build --no-cache -t gcr.io/${PROJECT_ID}/web-app:0.0.1-SNAPSHOT /home/ducdo/workspace/modjava/mod.phase3.out/web-app
 
 # Step 2: Push the Docker image to Google Container Registry
 echo_green "\nPushing the Docker image to Google Container Registry..."
