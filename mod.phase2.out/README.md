@@ -344,7 +344,7 @@ Model Usage                  Reqs   Input       │
 │                │                                                                    │
 │    │  gemini-2.5-pro                161     42,940,714         37,249               │
 │                │                                                                    │
-│    │  gemini-2.5-flash               55     19,544,396         19,029   
+│    │  gemini-flash-latest               55     19,544,396         19,029   
 
 Rough estimate
 
